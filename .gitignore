@@ -128,5 +128,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
-# self define hidden folder
+# self-defined hidden filename
 **/_x_*/
+**/_x_*
