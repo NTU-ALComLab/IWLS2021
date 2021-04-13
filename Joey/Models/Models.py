@@ -62,19 +62,21 @@ class FakeQuantOp(torch.autograd.Function):
 
 ##### FUSE Layers #####
 class ConvBN(nn.Module):
-    def __init__(self, in_planes, out_planes, kernel_size=3, stride=1, padding=1, dilation=1, groups=1, nBits=8, useBN=True):
+    def __init__(self, in_planes, out_planes, kernel_size=3, stride=1, padding=1, dilation=1, groups=1, nBits=8, useBN=True, useBias=True):
         self.kernel_size = kernel_size
         self.stride = stride
         self.padding = padding
         self.nBits=nBits
         self.useBN=useBN
+        self.useBias=useBias
         self.dilation=dilation
         self.groups=groups
         super(ConvBN, self).__init__()
         self.convW=nn.parameter.Parameter(torch.empty(out_planes,in_planes,kernel_size,kernel_size))
-        self.convB=nn.parameter.Parameter(torch.empty(out_planes))
+        if useBias:
+            self.convB=nn.parameter.Parameter(torch.empty(out_planes))
+            nn.init.normal_(self.convB)
         nn.init.normal_(self.convW)
-        nn.init.normal_(self.convB)
         if useBN:
             self.bnW=nn.parameter.Parameter(torch.empty(out_planes))
             self.bnB=nn.parameter.Parameter(torch.empty(out_planes))
@@ -87,7 +89,7 @@ class ConvBN(nn.Module):
         eps=1e-5
         momentum=0.1
         if self.training:
-            xStat=F.conv2d(x,self.convW,self.convB,self.stride,self.padding,self.dilation,self.groups)
+            xStat=F.conv2d(x,self.convW,self.convB if self.useBias else None,self.stride,self.padding,self.dilation,self.groups)
             with torch.no_grad():
                 self.mean=self.mean*(1-momentum)+xStat.mean([0,2,3])*momentum
                 self.var=self.var*(1-momentum)+xStat.var([0,2,3])*momentum
@@ -96,35 +98,43 @@ class ConvBN(nn.Module):
             r=self.bnW.unsqueeze(1).unsqueeze(1).unsqueeze(1)
             var=self.var.unsqueeze(1).unsqueeze(1).unsqueeze(1)
             w=self.convW*r/(torch.sqrt(var)+eps)
-            b=(self.convB-self.mean)*self.bnW/(torch.sqrt(self.var)+eps)+self.bnB
+            if self.useBias:
+                b=(self.convB-self.mean)*self.bnW/(torch.sqrt(self.var)+eps)+self.bnB
+            else:
+                b=(-self.mean)*self.bnW/(torch.sqrt(self.var)+eps)+self.bnB
+
         else:
             w=self.convW
-            b=self.convB
+            if self.useBias:
+                b=self.convB
 
         w=FakeQuantOp.apply(w,self.nBits)
-        b=FakeQuantOp.apply(b,self.nBits)
-        x=F.conv2d(x,w,b,self.stride,self.padding,self.dilation,self.groups)
+        if self.useBN or self.useBias:
+            b=FakeQuantOp.apply(b,self.nBits)
+        x=F.conv2d(x,w,b if (self.useBN or self.useBias) else None,self.stride,self.padding,self.dilation,self.groups)
         # self.convW.data=convWBu
         # self.convB.data=convBBu
         return x
 
 
 class LinearBN(nn.Module):
-    def __init__(self,inFeats,outFeats,nBits=8,useBN=True):
+    def __init__(self,inFeats,outFeats,nBits=8,useBN=True,useBias=True):
         super(LinearBN,self).__init__()
         self.inFeats=inFeats
         self.outFeats=outFeats
         self.nBits=nBits
         self.useBN=useBN
+        self.useBias=useBias
         self.linW=nn.parameter.Parameter(torch.empty(outFeats,inFeats))
-        self.linB=nn.parameter.Parameter(torch.empty(outFeats))
+        if useBias:
+            self.linB=nn.parameter.Parameter(torch.empty(outFeats))
+            nn.init.normal_(self.linB)
         if useBN:
             self.bnW=nn.parameter.Parameter(torch.empty(outFeats))
             self.bnB=nn.parameter.Parameter(torch.empty(outFeats))
             self.mean=torch.zeros(outFeats).to(device)
             self.var=torch.ones(outFeats).to(device)
             nn.init.normal_(self.linW)
-            nn.init.normal_(self.linB)
             nn.init.normal_(self.bnW)
             nn.init.normal_(self.bnB)
 
@@ -133,7 +143,7 @@ class LinearBN(nn.Module):
         eps=1e-5
         momentum=0.1
         if self.training and self.useBN:
-            xStat=F.linear(x,self.linW,self.linB)
+            xStat=F.linear(x,self.linW,self.linB if self.useBias else None)
             with torch.no_grad():
                 #print("xStat size:",xStat.size())
                 self.mean=self.mean*(1-momentum)+xStat.mean([0])*momentum
@@ -143,15 +153,20 @@ class LinearBN(nn.Module):
             var=self.var.unsqueeze(1)
 
             w=self.linW*r/(torch.sqrt(var)+eps)
-            b=(self.linB-self.mean)*self.bnW/(torch.sqrt(self.var)+eps)+self.bnB
+            if self.useBias:
+                b=(self.linB-self.mean)*self.bnW/(torch.sqrt(self.var)+eps)+self.bnB
+            else:
+                b=(-self.mean)*self.bnW/(torch.sqrt(self.var)+eps)+self.bnB
         else:
             w=self.linW
-            b=self.linB
+            if self.useBias:
+                b=self.linB
         #print('fcw')
         w=FakeQuantOp.apply(w,self.nBits)
         #print('fcb')
-        b=FakeQuantOp.apply(b,self.nBits)
-        x=F.linear(x,w,b)
+        if self.useBN or self.useBias::
+            b=FakeQuantOp.apply(b,self.nBits)
+        x=F.linear(x,w,b if (self.useBN or self.useBias) else None)
         return x
 
 
