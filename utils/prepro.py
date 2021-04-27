@@ -20,19 +20,14 @@ def imgPeel(data, n=0):
     return np.array(ret, dtype=np.uint8)
 
 # down-sample the pixels with the specified stride
-# case: stride = 1
-#       10101010...
-#       01010101...
 # case: stride = 2 (3,4...)
 #       10101010...
 #       00000000...
 #       10101010...
 def imgDownSample(data, n=1):
-    assert isinstance(n, int) and (n >= 0)
-    if n == 0:
-        return data
-    if n != 1:
-        return data[:, :, ::n, ::n]
+    assert isinstance(n, int) and (n >= 1)
+    return data[:, :, ::n, ::n]
+    """
     ret = []
     for dat in data:
         new = []
@@ -46,7 +41,8 @@ def imgDownSample(data, n=1):
                     img.append(ch[i][1:m:2])
             new.append(img)
         ret.append(new)
-    return np.array(ret, dtype=np.uint8)       
+    return np.array(ret, dtype=np.uint8)
+    """  
 
 # merge channels into one
 # flag: specify which channel is used
@@ -75,7 +71,7 @@ def imgCheck(data):
     return data.shape[2] == data.shape[3]
 
 # overall image prepocessing
-def imgPrepro(data, nPeel=0, nStride=0, fMergeCh=None, nLSB=0, fBlast=True):
+def imgPrepro(data, nPeel=0, nStride=1, fMergeCh=None, nLSB=0, fBlast=True):
     ret = imgPeel(data, nPeel)
     ret = imgDownSample(ret, nStride)
     if fMergeCh is not None:
