@@ -2,17 +2,18 @@ import numpy as np
 from dtree import DTree
 from scipy.special import comb
 from itertools import combinations as combs
-
+from joblib import Parallel, delayed
 
 class DTreeClf():
     # different training/testing modes for n-class classification:
     # - 'dir': directly predict the labels (non-binary output)
     # - '1hot': one-hot encoding with n outputs (balanced class weight in dtree is preferred)
     # - 'vote': vote by C(n, n/2) binary classifiers (C(10, 5) = 252)
-    def __init__(self, nClass=10, mode='dir', verbose=True, dtParams=dict()):
+    def __init__(self, nClass=10, mode='dir', verbose=True, nJob=10, dtParams=dict()):
         self.nClass = nClass
         self.mode = mode
         self.verbose = verbose
+        self.nJob = nJob
         self.dtParams = dtParams
         self.__initClf__()
 
@@ -37,9 +38,19 @@ class DTreeClf():
         # convert labels according to training mode
         traLabs = self.__traLabPrep__(labels)
 
-        for dt, lab in zip(self.dtrees, traLabs):
-            dt.train(flatDat, lab)
+        #for dt, lab in zip(self.dtrees, traLabs):
+        #    dt.train(flatDat, lab)
         
+        # parallel training
+        def f(dt, dat, lab):
+            dt.train(dat, lab)
+            return dt
+        #Parallel(n_jobs=10)(delayed(f)(dt, flatDat, lab) for dt, lab in zip(self.dtrees, traLabs))
+        #Parallel(n_jobs=10)(delayed(dt.train)(flatDat, lab) for dt, lab in zip(self.dtrees, traLabs))
+        #Parallel(n_jobs=10)(delayed(f)(self.dtrees[i], flatDat, traLabs[i]) for i in range(len(traLabs)))
+        #Parallel(n_jobs=10)(delayed(self.dtrees[i].train)(flatDat, traLabs[i]) for i in range(len(traLabs)))
+        self.dtrees = Parallel(n_jobs=self.nJob)(delayed(f)(dt, flatDat, lab) for dt, lab in zip(self.dtrees, traLabs))
+
         if self.verbose:
             _, acc = self.test(data, labels)
             print('DTreeClf training acc={}'.format(str(acc)))
@@ -63,7 +74,9 @@ class DTreeClf():
     # return the predicted labels of the input data by the dtree classifier
     def predict(self, data):
         flatDat = data.reshape((data.shape[0], -1))
-        preds = [dt.predict(flatDat) for dt in self.dtrees]
+        #preds = [dt.predict(flatDat) for dt in self.dtrees]
+        preds = Parallel(n_jobs=self.nJob)(delayed(dt.predict)(flatDat) for dt in self.dtrees)
+
         return self.__predLabPrep__(np.array(preds))
 
     # predicted labels postprocessing
