@@ -1,36 +1,27 @@
+#TODO: add fringe feature extraction
+
 import numpy as np
-from tqdm import tqdm
 from sklearn.tree import DecisionTreeClassifier
 
 class DTree():
-    def __init__(self, nOuts=10):
-        self.verbose = True
-    
-        # sklearn dtree params
-        self.criterion = 'entropy'
-        #self.max_depth = max_depth
-        #self.ccp_alpha = ccp_alpha
-        #self.random_state = randSeed
-        
-        # dtrees
-        self.nOuts = nOuts
-        self.dtrees = [DecisionTreeClassifier(criterion=self.criterion) for _ in range(nOuts)]
+    def __init__(self, idx=None, verbose=True, dtParams=dict()):
+        self.idx = idx
+        self.verbose = verbose
+        self.dtree = DecisionTreeClassifier(**dtParams)
 
+    # train the dtree with the given data and labels
     def train(self, data, labels):
-        # flatten data
-        flatDat = data.reshape((data.shape[0], -1))
+        self.dtree.fit(data, labels)
+        if self.verbose:
+            _, acc = self.test(data, labels)
+            print('training dt[{}], acc={}'.format(str(self.idx), str(acc)))
 
-        # convert labels to one-hot vectors
-        oneHotV = np.eye(self.nOuts, dtype=np.int8)[labels]
-
-        for i in tqdm(range(self.nOuts)):
-            #print(flatDat.shape, oneHotV[:, i].shape)
-            self.dtrees[i].fit(flatDat, oneHotV[:, i])
-
+    # return the predicted labels of the input data by the dtree
     def predict(self, data):
-        flatDat = data.reshape((data.shape[0], -1))
-        preds = [self.dtrees[i].predict(flatDat) for i in range(self.nOuts)]
-        return np.transpose(preds)
+        return self.dtree.predict(data)
 
+    # return the predictions and accuracy of the dtree on the input data
     def test(self, data, labels):
-        pass
+        preds = self.predict(data)
+        acc = np.sum(np.array(preds)==np.array(labels)) / len(labels)
+        return preds, acc
