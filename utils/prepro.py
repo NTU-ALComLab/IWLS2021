@@ -63,7 +63,7 @@ def imgBitBlast(data, n=8):
     assert isinstance(n, int) and (n >=0) and (n <= 8)
     ret = []
     for i in range(n):
-        ret.append((data >> n) & 1)
+        ret.append((data >> i) & 1)
     return np.stack(ret, axis=-1)
 
 # checking image property
