@@ -42,14 +42,11 @@ class DTreeClf():
         #    dt.train(flatDat, lab)
         
         # parallel training
-        def f(dt, dat, lab):
-            dt.train(dat, lab)
-            return dt
-        #Parallel(n_jobs=10)(delayed(f)(dt, flatDat, lab) for dt, lab in zip(self.dtrees, traLabs))
-        #Parallel(n_jobs=10)(delayed(dt.train)(flatDat, lab) for dt, lab in zip(self.dtrees, traLabs))
-        #Parallel(n_jobs=10)(delayed(f)(self.dtrees[i], flatDat, traLabs[i]) for i in range(len(traLabs)))
-        #Parallel(n_jobs=10)(delayed(self.dtrees[i].train)(flatDat, traLabs[i]) for i in range(len(traLabs)))
-        self.dtrees = Parallel(n_jobs=self.nJob)(delayed(f)(dt, flatDat, lab) for dt, lab in zip(self.dtrees, traLabs))
+        Parallel(n_jobs=10, backend='threading')(delayed(dt.train)(flatDat, lab) for dt, lab in zip(self.dtrees, traLabs))
+        #def f(dt, dat, lab):
+        #    dt.train(dat, lab)
+        #    return dt
+        #self.dtrees = Parallel(n_jobs=self.nJob)(delayed(f)(dt, flatDat, lab) for dt, lab in zip(self.dtrees, traLabs))
 
         if self.verbose:
             _, acc = self.test(data, labels)
