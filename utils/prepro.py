@@ -24,7 +24,8 @@ def imgPeel(data, n=0):
 #       10101010...
 #       00000000...
 #       10101010...
-def imgDownSample(data, n=1):
+# TODO: sample with an offset for data augmentation
+def imgDownSample(data, n=1, fAug=False):
     assert isinstance(n, int) and (n >= 1)
     return data[:, :, ::n, ::n]
     """
@@ -71,7 +72,8 @@ def imgCheck(data):
     return data.shape[2] == data.shape[3]
 
 # overall image prepocessing
-def imgPrepro(data, nPeel=0, nStride=1, fMergeCh=None, nLSB=0, fBlast=True):
+# TODO: pad the image to its original size
+def imgPrepro(data, nPeel=0, nStride=1, fMergeCh=None, nLSB=0, fBlast=True, fPad=True):
     ret = imgPeel(data, nPeel)
     ret = imgDownSample(ret, nStride)
     if fMergeCh is not None:
@@ -79,5 +81,7 @@ def imgPrepro(data, nPeel=0, nStride=1, fMergeCh=None, nLSB=0, fBlast=True):
     ret = imgRemoveLSB(ret, nLSB)
     if fBlast:
         ret = imgBitBlast(ret, 8-nLSB)
+    if fPad:
+        pass
     assert imgCheck(ret)
     return ret
