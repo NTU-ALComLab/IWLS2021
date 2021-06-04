@@ -45,3 +45,8 @@ class DTree(BaseClf):
         preds = self.predict(data)
         acc = np.sum(np.array(preds)==np.array(labels)) / len(labels)
         return preds, acc
+
+    # write the dtree into a sv file
+    def dump(self, fn):
+        fn += '_{}.sv'.format(str(self.idx))
+        raise NotImplementedError()

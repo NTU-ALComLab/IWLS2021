@@ -15,3 +15,10 @@ class BaseClf():
     # return the predictions and accuracy of the clf on the input data
     def test(self, data, labels):
         raise NotImplementedError()
+
+    # write the clf into a file
+    # fn is the prefix of the output file
+    # the output file should be: fn + '_' + idx + .format
+    # e.g. dtree_2.sv, lutNet_5.blif ...
+    def dump(self, fn):
+        raise NotImplementedError()
