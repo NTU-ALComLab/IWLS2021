@@ -3,7 +3,7 @@
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier
 from .BaseClf import BaseClf
-#from ..tree2sv import tree2sv
+from .Tree2SV import tree2sv
 
 def dataPrepro(data, labels):
     # flatten data
@@ -42,4 +42,4 @@ class DTree(BaseClf):
     # write the dtree into a sv file
     def dump(self, fn):
         fn += '_{}.sv'.format(str(self.idx))
-        raise NotImplementedError()
+        tree2sv(self.dtree, fn)

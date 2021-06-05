@@ -121,3 +121,7 @@ class Trainer():
         preds = self.predict(data)
         acc = np.sum(np.array(preds)==np.array(labels)) / len(labels)
         return preds, acc
+
+    def dump(self, fn):
+        for clf in self.clfs:
+            clf.dump(fn)
