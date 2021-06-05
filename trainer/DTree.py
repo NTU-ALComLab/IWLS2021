@@ -5,13 +5,6 @@ from sklearn.tree import DecisionTreeClassifier
 from .BaseClf import BaseClf
 #from ..tree2sv import tree2sv
 
-initParams = {
-    'criterion': 'entropy',
-    #'max_depth': 30,
-    'class_weight': 'balanced',
-    #'ccp_alpha': 0.015
-}
-
 def dataPrepro(data, labels):
     # flatten data
     data = data.reshape((data.shape[0], -1))
@@ -22,7 +15,7 @@ def dataPrepro(data, labels):
     return data, labels
 
 class DTree(BaseClf):
-    def __init__(self, idx=None, verbose=True, dtParams=initParams):
+    def __init__(self, idx=None, verbose=True, dtParams=dict()):
         super().__init__(idx, verbose, dtParams)
         self.idx = idx
         self.verbose = verbose
