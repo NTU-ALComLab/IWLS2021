@@ -20,14 +20,20 @@ def imgPeel(data, n=0):
     return np.array(ret, dtype=np.uint8)
 
 # down-sample the pixels with the specified stride
+# n has to be the divisor of image height/width
 # case: stride = 2 (3,4...)
 #       10101010...
 #       00000000...
 #       10101010...
-# TODO: sample with an offset for data augmentation
-def imgDownSample(data, n=1, fAug=False):
+# if n < 0: perform data augmentation with offset
+def imgDownSample(data, n=1):
+    n, fAug = abs(n), (n < 0)
     assert isinstance(n, int) and (n >= 1)
-    return data[:, :, ::n, ::n]
+    assert (data.shape[2] % n == 0) and (data.shape[3] % n == 0)
+    if not fAug:
+        return data[:, :, ::n, ::n]
+    ret = [data[:, :, i::n, i::n] for i in range(n)]
+    return np.concatenate(ret)
     """
     ret = []
     for dat in data:
@@ -62,6 +68,7 @@ def imgRemoveLSB(data, n=0):
 # n: number of bits
 def imgBitBlast(data, n=8):
     assert isinstance(n, int) and (n >=0) and (n <= 8)
+    #toBin = lambda x, k: np.array(list(np.binary_repr(x, k)), dtype=np.int8)
     ret = []
     for i in range(n):
         ret.append((data >> i) & 1)
@@ -71,17 +78,25 @@ def imgBitBlast(data, n=8):
 def imgCheck(data):
     return data.shape[2] == data.shape[3]
 
+# pad the image with 0s to its original size (n_data, 3, 32, 32) and 8-bit precision
+def imgPad(data, nLSB):
+    assert data.shape[2] == data.shape[3]
+    assert 32 % data.shape[2] == 0
+    k = 32 // data.shape[2]
+    ret = np.zeros((data.shape[0], data.shape[1], 32, 32), dtype=np.uint8)
+    ret[:, :, ::k, ::k] = (data << nLSB)
+    return ret
+
 # overall image prepocessing
-# TODO: pad the image to its original size
 def imgPrepro(data, nPeel=0, nStride=1, fMergeCh=None, nLSB=0, fBlast=True, fPad=True):
     ret = imgPeel(data, nPeel)
     ret = imgDownSample(ret, nStride)
     if fMergeCh is not None:
         ret = imgMergeChannel(ret, fMergeCh)
     ret = imgRemoveLSB(ret, nLSB)
-    if fBlast:
-        ret = imgBitBlast(ret, 8-nLSB)
     if fPad:
-        pass
+        ret = imgPad(ret, nLSB)
+    if fBlast:
+        ret = imgBitBlast(ret, 8 if fPad else (8-nLSB))
     assert imgCheck(ret)
     return ret
