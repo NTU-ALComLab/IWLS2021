@@ -54,10 +54,13 @@ class Trainer():
 
     # training labels preprocessing
     def __traLabPrep__(self, labels):
+        # 'dir': same labels as given
         if self.mode == 'dir':
             return [labels]
+        # 'oaa': one-hot encoding of labels
         elif self.mode == 'oaa':
             return np.eye(self.nClass, dtype=np.int8)[labels].T
+        # 'gag': divide all classes into 2 groups, each annotated with 0 and 1 labels
         elif self.mode == 'gag':
             ret = []
             for i, s in enumerate(combs(range(self.nClass), self.nClass//2)):
@@ -65,6 +68,7 @@ class Trainer():
                 s = set(s)
                 ret.append([lab in s for lab in labels])
             return np.array(ret, dtype=np.int8)
+        # 'oao': select 2 classes for comparison, annotate the first class with 0, second with 1, and the rest with -1
         elif self.mode == 'oao':
             ret = []
             for s in combs(range(self.nClass), 2):
