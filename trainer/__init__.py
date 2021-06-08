@@ -12,7 +12,7 @@ dtParams = {
 rfParams = {
     'n_estimators': 100,
     'criterion': 'entropy',
-    'max_depth': 30,
+    'max_depth': 20,
     'n_jobs': 1,
     'class_weight': 'balanced_subsample',
     #'ccp_alpha': 0.015,

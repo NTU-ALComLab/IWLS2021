@@ -121,8 +121,8 @@ class Trainer():
             assert False
 
     # return the predictions and accuracy of the classifier on the input data
-    def test(self, data, labels):
-        preds = self.predict(data)
+    def test(self, data, labels, nJob=1):
+        preds = self.predict(data, nJob)
         acc = np.sum(np.array(preds)==np.array(labels)) / len(labels)
         return preds, acc
 
