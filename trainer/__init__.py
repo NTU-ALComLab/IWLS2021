@@ -30,7 +30,7 @@ dfParams = {
     'partial_mode': True,
     #'n_jobs': 1,
     #'random_state': None,
-    #'verbose': 1,
+    'verbose': 0,
 }
 
 #lutParams = {}
@@ -44,7 +44,7 @@ def getTrainer(clfType='dt', nClass=10, mode='dir', verbose=True, clfParams=None
         clf = RForest
     elif clfType == 'df':
         params = dfParams if (clfParams is None) else clfParams
-        params['verbose'] = 1 if verbose else 0
+        #params['verbose'] = 1 if verbose else 0
         clf = DForest
     elif clfType == 'lut':
         raise NotImplementedError()
