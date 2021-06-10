@@ -126,6 +126,7 @@ class Trainer():
         acc = np.sum(np.array(preds)==np.array(labels)) / len(labels)
         return preds, acc
 
-    def dump(self, fn):
+    def dump(self, fn, nBit):
+        nOut = self.nClass if (self.mode == 'dir') else 1
         for clf in self.clfs:
-            clf.dump(fn)
+            clf.dump(fn, nBit, nOut)

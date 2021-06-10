@@ -2,7 +2,7 @@ import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from .BaseClf import BaseClf
 from .DTree import dataPrepro
-from .Tree2SV import tree2sv
+#from .Tree2SV import tree2sv
 
 class RForest(BaseClf):
     def __init__(self, idx=None, verbose=True, rfParams=dict()):

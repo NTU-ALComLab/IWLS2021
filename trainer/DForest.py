@@ -2,7 +2,7 @@ import numpy as np
 from deepforest import CascadeForestClassifier
 from .BaseClf import BaseClf
 from .DTree import dataPrepro
-from .Tree2SV import tree2sv
+#from .Tree2SV import tree2sv
 
 class DForest(BaseClf):
     def __init__(self, idx=None, verbose=True, dfParams=dict()):
