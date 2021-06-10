@@ -42,4 +42,4 @@ class DTree(BaseClf):
     # write the dtree into a sv file
     def dump(self, fn):
         fn += '_{}.sv'.format(str(self.idx))
-        tree2sv(self.dtree, fn)
+        tree2sv(self.dtree, fn)  # TODO: pass nBits arg here

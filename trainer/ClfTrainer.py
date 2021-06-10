@@ -59,7 +59,7 @@ class Trainer():
             return [labels]
         # 'oaa': one-hot encoding of labels
         elif self.mode == 'oaa':
-            return np.eye(self.nClass, dtype=np.int8)[labels].T
+            return np.eye(self.nClass, dtype=np.uint8)[labels].T
         # 'gag': divide all classes into 2 groups, each annotated with 0 and 1 labels
         elif self.mode == 'gag':
             ret = []
@@ -67,7 +67,7 @@ class Trainer():
                 if i >= len(self.clfs): break
                 s = set(s)
                 ret.append([lab in s for lab in labels])
-            return np.array(ret, dtype=np.int8)
+            return np.array(ret, dtype=np.uint8)
         # 'oao': select 2 classes for comparison, annotate the first class with 0, second with 1, and the rest with -1
         elif self.mode == 'oao':
             ret = []
@@ -78,7 +78,7 @@ class Trainer():
                     elif lab == s[1]: x.append(1)
                     else: x.append(-1)
                 ret.append(x)
-            return np.array(ret, dtype=np.int8)
+            return np.array(ret, dtype=np.uint8)
         else:
             print(self.mode, 'mode not supported.')
             assert False
