@@ -19,7 +19,7 @@ preConfig0 = {
     'nPeel': 0,
     'nStride': 1,
     'fMergeCh': None, 
-    'nLSB': 0,
+    'nLSB': 4,
     'fBlast': False,
     'fPad': True,
 }
