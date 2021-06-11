@@ -1,17 +1,44 @@
 import numpy as np
 from sklearn.tree import _tree
 
+#svTxt = \
+#'''
+#module DTreeTest(
+#    input [7:0] data [0:3071],
+#    output N_OUTPUTS pred
+#);
+#
+#assign pred = DECISIONS;
+#
+#endmodule
+#'''
+
+# template
 svTxt = \
 '''
-module DTreeTest(
-    input [7:0] data [0:3071],
-    output N_OUTPUTS pred
+module __MODULE_NAME__(
+    __IOPORTS__
 );
 
-assign pred = DECISIONS;
+__BODY__
 
 endmodule
 '''
+
+# generate io texts
+# ioList: list of tuples (io_type, n_bits, port_name, array_len)
+def ioGen(ioList):
+    assert len(ioList) > 0
+
+    getNB = lambda n: '' if (n == 1) else '[{}:0]'.format(str(n - 1))
+    getAL = lambda n: '' if (n == 1) else '[0:{}]'.format(str(n - 1))
+
+    ret = []
+    for x in ioList:
+        assert (len(x) == 4) and (x[0] in {'input', 'output'}) and (x[1] > 0) and (x[3] > 0)
+        ret.append('{} {} {} {}'.format(x[0], getNB(x[1]), x[2], getAL(x[3])))
+    
+    return ',\n    '.join(ret)
 
 class Tree2SV_Writer():
     def __init__(self, dtree, nBit=8, nOut=10):
@@ -52,9 +79,12 @@ class Tree2SV_Writer():
         return '({}) ? ({}) : ({})'.format(cond, left, right)
 
     def write(self, fn):
-        no = '' if (self.nOut == 1) else '[{}:0]'.format(str(self.nOut - 1))
-        c = self.extract_recur()
+        ioPort = ioGen([('input', 8, 'data', 32*32*3), ('output', self.nOut, 'pred', 1)])
+        body = 'assign pred = {};'.format(self.extract_recur())
 
-        s = svTxt.replace('N_OUTPUTS', no).replace('DECISIONS', c)
+        s = svTxt.replace('__MODULE_NAME__', fn.replace('.sv', '')) \
+                 .replace('__IOPORTS__', ioPort) \
+                 .replace('__BODY__', body)
+
         with open(fn, 'w') as fp:
             fp.write(s)
