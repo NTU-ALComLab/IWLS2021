@@ -68,7 +68,7 @@ def imgRemoveLSB(data, n=0):
 # n: number of bits
 def imgBitBlast(data, n=8):
     assert isinstance(n, int) and (n >=0) and (n <= 8)
-    #toBin = lambda x, k: np.array(list(np.binary_repr(x, k)), dtype=np.int8)
+    #toBin = lambda x, k: np.array(list(np.binary_repr(x, k)), dtype=np.uint8)
     ret = []
     for i in range(n):
         ret.append((data >> i) & 1)

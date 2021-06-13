@@ -17,8 +17,12 @@ class BaseClf():
         raise NotImplementedError()
 
     # write the clf into a file
-    # fn is the prefix of the output file
-    # the output file should be: fn + '_' + idx + .format
-    # e.g. dtree_2.sv, lutNet_5.blif ...
-    def dump(self, fn):
+    # fn:   the prefix of the output file
+    #       the output file should be: fn + '_' + idx + .format
+    #       e.g. dtree_2.sv, lutNet_5.blif ...
+    # nBit: number of bits of each pixel in an image
+    # nOut: number of primary output
+    #       for binary classification, nOut = 1
+    #       otherwise for multi-class classification, nOut = nClass
+    def dump(self, fn, nBit, nOut):
         raise NotImplementedError()

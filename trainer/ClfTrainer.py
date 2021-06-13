@@ -54,17 +54,21 @@ class Trainer():
 
     # training labels preprocessing
     def __traLabPrep__(self, labels):
+        # 'dir': same labels as given
         if self.mode == 'dir':
             return [labels]
+        # 'oaa': one-hot encoding of labels
         elif self.mode == 'oaa':
-            return np.eye(self.nClass, dtype=np.int8)[labels].T
+            return np.eye(self.nClass, dtype=np.uint8)[labels].T
+        # 'gag': divide all classes into 2 groups, each annotated with 0 and 1 labels
         elif self.mode == 'gag':
             ret = []
             for i, s in enumerate(combs(range(self.nClass), self.nClass//2)):
                 if i >= len(self.clfs): break
                 s = set(s)
                 ret.append([lab in s for lab in labels])
-            return np.array(ret, dtype=np.int8)
+            return np.array(ret, dtype=np.uint8)
+        # 'oao': select 2 classes for comparison, annotate the first class with 0, second with 1, and the rest with -1
         elif self.mode == 'oao':
             ret = []
             for s in combs(range(self.nClass), 2):
@@ -74,7 +78,7 @@ class Trainer():
                     elif lab == s[1]: x.append(1)
                     else: x.append(-1)
                 ret.append(x)
-            return np.array(ret, dtype=np.int8)
+            return np.array(ret, dtype=np.uint8)
         else:
             print(self.mode, 'mode not supported.')
             assert False
@@ -117,11 +121,12 @@ class Trainer():
             assert False
 
     # return the predictions and accuracy of the classifier on the input data
-    def test(self, data, labels):
-        preds = self.predict(data)
+    def test(self, data, labels, nJob=1):
+        preds = self.predict(data, nJob)
         acc = np.sum(np.array(preds)==np.array(labels)) / len(labels)
         return preds, acc
 
-    def dump(self, fn):
+    def dump(self, fn, nBit):
+        nOut = self.nClass if (self.mode == 'dir') else 1
         for clf in self.clfs:
-            clf.dump(fn)
+            clf.dump(fn, nBit, nOut)
