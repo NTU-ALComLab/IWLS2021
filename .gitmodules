@@ -7,3 +7,6 @@
 [submodule "tools/sv2v"]
 	path = tools/sv2v
 	url = https://github.com/zachjs/sv2v.git
+[submodule "tools/CIFAR-ZOO"]
+	path = tools/CIFAR-ZOO
+	url = https://github.com/BIGBALLON/CIFAR-ZOO.git
