@@ -1,7 +1,9 @@
+import os
 import numpy as np
 from scipy.special import comb
 from itertools import combinations as combs
 from joblib import Parallel, delayed
+from .BinClfEns import BinVoter_write
 
 class Trainer():
     # different training/testing modes for n-class classification:
@@ -34,7 +36,7 @@ class Trainer():
         self.clfs = [clf(i, self.verbose, clfParams) for i in range(n)]
     
     # train the classifier with the given data and labels
-    def train(self, data, labels, nJob=1):
+    def train(self, data, labels, valData=None, valLabels=None, nJob=1):
         # convert labels according to training mode
         traLabs = self.__traLabPrep__(labels)
 
@@ -48,9 +50,13 @@ class Trainer():
         #    return dt
         #self.dtrees = Parallel(n_jobs=self.nJob)(delayed(f)(dt, flatDat, lab) for dt, lab in zip(self.dtrees, traLabs))
 
+        _, traAcc = self.test(data, labels)
+        _, valAcc = self.test(valData, valLabels)
         if self.verbose:
-            _, acc = self.test(data, labels)
-            print('Clf training acc={}'.format(str(acc)))
+            print('Clf training acc={}'.format(str(traAcc)))
+            print('Clf validation acc={}'.format(str(valAcc)))
+        
+        return traAcc, valAcc
 
     # training labels preprocessing
     def __traLabPrep__(self, labels):
@@ -59,7 +65,7 @@ class Trainer():
             return [labels]
         # 'oaa': one-hot encoding of labels
         elif self.mode == 'oaa':
-            return np.eye(self.nClass, dtype=np.uint8)[labels].T
+            return np.eye(self.nClass, dtype=np.int8)[labels].T
         # 'gag': divide all classes into 2 groups, each annotated with 0 and 1 labels
         elif self.mode == 'gag':
             ret = []
@@ -67,7 +73,7 @@ class Trainer():
                 if i >= len(self.clfs): break
                 s = set(s)
                 ret.append([lab in s for lab in labels])
-            return np.array(ret, dtype=np.uint8)
+            return np.array(ret, dtype=np.int8)
         # 'oao': select 2 classes for comparison, annotate the first class with 0, second with 1, and the rest with -1
         elif self.mode == 'oao':
             ret = []
@@ -78,7 +84,7 @@ class Trainer():
                     elif lab == s[1]: x.append(1)
                     else: x.append(-1)
                 ret.append(x)
-            return np.array(ret, dtype=np.uint8)
+            return np.array(ret, dtype=np.int8)
         else:
             print(self.mode, 'mode not supported.')
             assert False
@@ -122,11 +128,19 @@ class Trainer():
 
     # return the predictions and accuracy of the classifier on the input data
     def test(self, data, labels, nJob=1):
+        if (data is None) or (labels is None):
+            return None, None
         preds = self.predict(data, nJob)
         acc = np.sum(np.array(preds)==np.array(labels)) / len(labels)
         return preds, acc
 
+    # fn: folder to dump the circuit files
     def dump(self, fn, nBit):
         nOut = self.nClass if (self.mode == 'dir') else 1
-        for clf in self.clfs:
-            clf.dump(fn, nBit, nOut)
+        
+        clfList = ['clf_{}'.format(str(i)) for i in range(len(self.clfs))]
+        for name, clf in zip(clfList, self.clfs):
+            name = os.path.join(fn, name + '.sv')
+            clf.dump(name, nBit, nOut)
+
+        BinVoter_write(os.path.join(fn, 'predictor.sv'), self.mode, self.nClass, clfList)

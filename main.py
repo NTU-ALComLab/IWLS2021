@@ -4,6 +4,7 @@ import os, utils, trainer
 def getArgs():
     parser = ArgumentParser(description='sample script for training.')
     parser.add_argument('--data_path', type=str, default='./data/raw/train_data.pk')
+    parser.add_argument('--output_path', type=str, default=None)
     parser.add_argument('--clf_type', default='dt', type=str, choices=['dt', 'rf', 'df'])  # lut not yet supported
     parser.add_argument('--mode', default='dir', type=str, choices=['dir', 'oaa', 'gag', 'oao'])
     parser.add_argument('--n_jobs', default=1, type=int)
@@ -48,14 +49,29 @@ if __name__ == '__main__':
     val_data = utils.imgPrepro(val_data, **preConfig)
     if args.verbose: print('data preprocessing: done.')
 
-    # perform training
+    # perform training and evaluation
     clfParams = None if (args.train_config is None) else utils.loadConfig(args.train_config)
     tr = trainer.getTrainer(args.clf_type, 10, args.mode, args.verbose, clfParams)
-    tr.train(train_data, train_labels, args.n_jobs)
+    train_acc, val_acc = tr.train(train_data, train_labels, val_data, val_labels, args.n_jobs)
     if args.verbose: print('training classifier: done.')
 
     # evaluation
-    _, acc = tr.test(val_data, val_labels, args.n_jobs)
-    print('val. acc.:', acc)
+    #_, train_acc = tr.test(train_data, train_labels, args.n_jobs)
+    #_, val_acc = tr.test(val_data, val_labels, args.n_jobs)
+    #print('val. acc.:', valAcc)
 
-    # TODO: write circuits...
+    # write circuits and logging
+    if args.output_path is not None:
+        os.makedirs(fn, exist_ok=True)
+
+        # dump log
+        with open(os.path.join(args.output_path, 'acc.log'), 'w') as fp:
+            fp.write('training acc: {}\n'.format(str(train_acc)))
+            fp.write('validation acc: {}\n'.format(str(val_acc)))
+        
+        # dump config
+        utils.dumpConfig(preConfig, os.path.join(args.output_path, 'pre_config.yaml'))
+        utils.dumpConfig(tr.clfs[0].params, os.path.join(args.output_path, 'train_config.yaml'))
+
+        # dump circuits
+        tr.dump(args.output_path, 8-preConfig['nLSB'])
