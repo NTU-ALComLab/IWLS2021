@@ -62,12 +62,16 @@ if __name__ == '__main__':
 
     # write circuits and logging
     if args.output_path is not None:
-        os.makedirs(fn, exist_ok=True)
+        os.makedirs(args.output_path, exist_ok=True)
 
         # dump log
-        with open(os.path.join(args.output_path, 'acc.log'), 'w') as fp:
-            fp.write('training acc: {}\n'.format(str(train_acc)))
-            fp.write('validation acc: {}\n'.format(str(val_acc)))
+        log = vars(args)
+        log['train_acc'] = float(train_acc)
+        log['val_acc'] = float(val_acc)
+        utils.dumpConfig(log, os.path.join(args.output_path, 'log.yaml'))
+        #with open(os.path.join(args.output_path, 'acc.log'), 'w') as fp:
+        #    fp.write('training acc: {}\n'.format(str(train_acc)))
+        #    fp.write('validation acc: {}\n'.format(str(val_acc)))
         
         # dump config
         utils.dumpConfig(preConfig, os.path.join(args.output_path, 'pre_config.yaml'))

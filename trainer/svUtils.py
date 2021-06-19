@@ -33,8 +33,8 @@ def svVarGen(varList):
     return ''.join(ret)
 
 # assign var = val;
-def svAssign(var, val):
-    return 'assign {} = {};\n'.format(var, val)
+def svAssign(vvar, val):
+    return 'assign {} = {};\n'.format(vvar, val)
 
 # ioList: list of (module port, wire) tuples
 def svModule(name, idx, ioList):
@@ -43,3 +43,7 @@ def svModule(name, idx, ioList):
                      .replace('IDX', str(idx)) \
                      .replace('IOPORTS', ios)
     return ret
+
+def svBitPad(vvar, n):
+    pad = '{}\'d0'.format(str(n))
+    return '{{{}, {}}}'.format(pad, vvar)

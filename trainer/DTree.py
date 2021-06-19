@@ -25,9 +25,9 @@ class Tree2SV_Writer():
 
     def extract_recur(self, nodeId=0):
         # small utilities
-        getClsStr = lambda i, nCls: '{}\'b{}'.format(str(nCls), ''.join(['1' if (j == i) else '0' for j in range(nCls)]))
+        getClsStr = lambda i, nCls: '{}\'b{}'.format(str(nCls), ''.join(['1' if (j == (nCls-1-i)) else '0' for j in range(nCls)]))
         getThre = lambda thr: '{}\'d{}'.format(str(self.nBit), str(int(thr) >> (8 - self.nBit)))
-        getFeat = lambda feat: 'data[{}][7:{}]'.format(str(feat), str(8 - self.nBit))
+        getFeat = lambda feat: 'data_{}[7:{}]'.format(str(feat), str(8 - self.nBit))
         
         # termination: leaf node
         if self.dtFeat[nodeId] == _tree.TREE_UNDEFINED:
@@ -44,14 +44,16 @@ class Tree2SV_Writer():
         return '({}) ? ({}) : ({})'.format(cond, left, right)
 
     def write(self, fn):
-        name = fn.split('/')[-1].replace('.sv', '')
-        ios = 'data, pred'
-        vars = svVarGen([('input', 8, 'data', 32*32*3), ('output', self.nOut, 'pred', 1)])
+        name = fn.split('/')[-1].replace('.v', '')
+        ios = ['data_{}'.format(str(i)) for i in range(32*32*3)] + ['pred']
+        #vars = svVarGen([('input', 8, 'data', 32*32*3), ('output', self.nOut, 'pred', 1)])
+        vvars = svVarGen([('input', 8, 'data_{}'.format(str(i)), 1) for i in range(32*32*3)])
+        vvars += svVarGen([('output', self.nOut, 'pred', 1)])
         body = svAssign('pred', self.extract_recur())
 
         s = svTemplateTxt.replace('MODULE', name) \
-                 .replace('IOPORTS', ios) \
-                 .replace('VARS', vars) \
+                 .replace('IOPORTS', ', '.join(ios)) \
+                 .replace('VARS', vvars) \
                  .replace('BODY', body)
         
         with open(fn, 'w') as fp:

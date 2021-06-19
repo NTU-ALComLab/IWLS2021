@@ -122,6 +122,15 @@ class Trainer():
                     k = s[0] if (preds[i, j] == 0) else s[1]
                     ret[k, j] += 1
             return np.argmax(ret, axis=0)
+            
+            # testing: remove tied votes
+            #rret = []
+            #for x in ret.T:
+            #    if len(np.argwhere(x == x.max())) > 1:
+            #        rret.append(-1)
+            #    else:
+            #        rret.append(x.argmax())
+            #return np.array(rret)
         else:
             print(self.mode, 'mode not supported.')
             assert False
@@ -140,7 +149,7 @@ class Trainer():
         
         clfList = ['clf_{}'.format(str(i)) for i in range(len(self.clfs))]
         for name, clf in zip(clfList, self.clfs):
-            name = os.path.join(fn, name + '.sv')
+            name = os.path.join(fn, name + '.v')
             clf.dump(name, nBit, nOut)
 
-        BinVoter_write(os.path.join(fn, 'predictor.sv'), self.mode, self.nClass, clfList)
+        BinVoter_write(os.path.join(fn, 'predictor.v'), self.mode, self.nClass, clfList)
