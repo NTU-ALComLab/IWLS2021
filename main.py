@@ -45,7 +45,7 @@ if __name__ == '__main__':
 
     # perform data preprocessing
     preConfig = preConfig0 if (args.prepro_config is None) else utils.loadConfig(args.prepro_config)
-    train_data = utils.imgPrepro(train_data, **preConfig)
+    train_data, train_labels = utils.imgPrepro(train_data, train_labels, **preConfig)
     val_data = utils.imgPrepro(val_data, **preConfig)
     if args.verbose: print('data preprocessing: done.')
 

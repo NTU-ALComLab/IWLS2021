@@ -88,7 +88,9 @@ def imgPad(data, nLSB):
     return ret
 
 # overall image prepocessing
-def imgPrepro(data, nPeel=0, nStride=1, fMergeCh=None, nLSB=0, fBlast=True, fPad=True):
+def imgPrepro(data, labels=None, nPeel=0, nStride=1, fMergeCh=None, nLSB=0, fBlast=True, fPad=True):
+    if labels is None:
+        nStride = abs(nStride)
     ret = imgPeel(data, nPeel)
     ret = imgDownSample(ret, nStride)
     if fMergeCh is not None:
@@ -99,4 +101,12 @@ def imgPrepro(data, nPeel=0, nStride=1, fMergeCh=None, nLSB=0, fBlast=True, fPad
     if fBlast:
         ret = imgBitBlast(ret, 8 if fPad else (8-nLSB))
     assert imgCheck(ret)
-    return ret
+    
+    if labels is None: return ret
+
+    assert (len(data) == len(labels)) and (type(labels) == list)
+    if nStride > 0:
+        assert len(ret) == len(labels)
+    else:
+        assert len(ret) % len(labels) == 0
+    return ret, labels * (len(ret) // len(labels))
