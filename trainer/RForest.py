@@ -27,12 +27,13 @@ class RForest2SV_Writer():
 
         # accumulate votes
         accList = [[] for _ in range(nClass)]
-        for i in range(self.nClass): for j in predList:
-            if self.nOut == 1:
-                p = ('' if (i == 1) else '~') + j
-            else:
-                p = svBitSlice(j, i)
-            accList[i].append(svBitPad(p, nSumBit-1))
+        for i in range(self.nClass):
+            for j in predList:
+                if self.nOut == 1:
+                    p = ('' if (i == 1) else '~') + j
+                else:
+                    p = svBitSlice(j, i)
+                accList[i].append(svBitPad(p, nSumBit-1))
 
         body += bvPost(sumList, accList, self.nOut == 1)
         
