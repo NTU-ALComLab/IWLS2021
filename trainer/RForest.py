@@ -1,7 +1,8 @@
+import os, math
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from .BaseClf import BaseClf
-from .svUtils import svBitPad, svBitSlice
+from .svUtils import svTemplateTxt, svVarGen, svBitPad, svBitSlice, svWrite
 from .DTree import dataPrepro, Tree2SV_Writer
 from .BinClfEns import bvPrep, bvPost
 
@@ -22,11 +23,11 @@ class RForest2SV_Writer():
             Tree2SV_Writer(j, self.nBit, self.nOut).write(fn)
 
     def voterGen(self):
-        nSumBit = math.ceil(math.log2(len(clfList) + 1))
-        predList, sumList, vvars, body = bvPrep(nClass, self.dtList, nSumBit, self.nOut)
+        nSumBit = math.ceil(math.log2(len(self.dtList) + 1))
+        predList, sumList, vvars, body = bvPrep(self.nClass, self.dtList, nSumBit, self.nOut)
 
         # accumulate votes
-        accList = [[] for _ in range(nClass)]
+        accList = [[] for _ in range(self.nClass)]
         for i in range(self.nClass):
             for j in predList:
                 if self.nOut == 1:
@@ -43,16 +44,12 @@ class RForest2SV_Writer():
     def treeEns(self, fn):
         ios = ['data_{}'.format(str(i)) for i in range(32*32*3)] + ['pred']
         vvars = svVarGen([('input', 8, 'data_{}'.format(i), 1) for i in range(32*32*3)])
-        vvars += svVarGen([('output', nClass, 'pred', 1)])
+        vvars += svVarGen([('output', self.nClass, 'pred', 1)])
 
         nvars, body = self.voterGen()
 
-        s = svTemplateTxt.replace('MODULE', self.name) \
-                .replace('IOPORTS', ios) \
-                .replace('VARS', vvars + nvars) \
-                .replace('BODY', body)
-
         with open(fn, 'w') as fp:
+            s = svWrite(self.name, ', '.join(ios), vvars + nvars, body)
             fp.write(s)
 
     def write(self, fn):
@@ -60,7 +57,7 @@ class RForest2SV_Writer():
         self.name = self.name.replace('.v', '')
         self.dtList = ['{}_{}'.format(self.name, str(i)) for i in range(len(self.dtrees))]
         
-        self.witeTrees()
+        self.writeTrees()
         self.treeEns(fn)
 
 

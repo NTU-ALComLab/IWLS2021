@@ -1,6 +1,6 @@
 import math
 from itertools import combinations as combs
-from .svUtils import svTemplateTxt, svAssign, svModule, svVarGen, svBitPad, svBitSlice
+from .svUtils import svTemplateTxt, svAssign, svModule, svVarGen, svBitPad, svBitSlice, svWrite
 
 COMP_FLAG = 1
 
@@ -127,10 +127,6 @@ def BinVoter_write(fn, mode, nClass, clfList):
     else:
         assert False
     
-    s = svTemplateTxt.replace('MODULE', name) \
-             .replace('IOPORTS', ', '.join(ios)) \
-             .replace('VARS', vvars + nvars) \
-             .replace('BODY', body)
-
     with open(fn, 'w') as fp:
+        s = svWrite(name, ', '.join(ios), vvars + nvars, body)
         fp.write(s)

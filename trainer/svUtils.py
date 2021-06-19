@@ -55,3 +55,10 @@ def svBitSlice(vvar, start, end=None):
     else:
         assert isinstance(end, int) and (end >= 0)
         return  '{}[{}:{}]'.format(vvar, str(start), str(end))
+
+def svWrite(name, ios, vvars, body):
+    ret = svTemplateTxt.replace('MODULE', name) \
+                       .replace('IOPORTS', ios) \
+                       .replace('VARS', vvars) \
+                       .replace('BODY', body)
+    return ret

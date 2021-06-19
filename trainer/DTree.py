@@ -3,7 +3,7 @@
 import numpy as np
 from sklearn.tree import DecisionTreeClassifier, _tree
 from .BaseClf import BaseClf
-from .svUtils import svTemplateTxt, svVarGen, svAssign
+from .svUtils import svTemplateTxt, svVarGen, svAssign, svWrite
 
 class Tree2SV_Writer():
     def __init__(self, dtree, nBit=8, nOut=10):
@@ -51,12 +51,8 @@ class Tree2SV_Writer():
         vvars += svVarGen([('output', self.nOut, 'pred', 1)])
         body = svAssign('pred', self.extract_recur())
 
-        s = svTemplateTxt.replace('MODULE', name) \
-                 .replace('IOPORTS', ', '.join(ios)) \
-                 .replace('VARS', vvars) \
-                 .replace('BODY', body)
-        
         with open(fn, 'w') as fp:
+            s = svWrite(name, ', '.join(ios), vvars, body)
             fp.write(s)
 
 def dataPrepro(data, labels):
