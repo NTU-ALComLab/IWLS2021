@@ -1,10 +1,9 @@
-from IWLS2021.trainer.svUtils import svBitPad, svBitSlice
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
 from .BaseClf import BaseClf
+from .svUtils import svBitPad, svBitSlice
 from .DTree import dataPrepro, Tree2SV_Writer
 from .BinClfEns import bvPrep, bvPost
-#from .Tree2SV import tree2sv
 
 class RForest2SV_Writer():
     def __init__(self, rforest, nBit=8, nOut=10):
