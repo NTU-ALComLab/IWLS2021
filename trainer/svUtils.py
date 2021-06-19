@@ -47,3 +47,11 @@ def svModule(name, idx, ioList):
 def svBitPad(vvar, n):
     pad = '{}\'d0'.format(str(n))
     return '{{{}, {}}}'.format(pad, vvar)
+
+def svBitSlice(vvar, start, end=None):
+    assert isinstance(start, int) and (start >= 0)
+    if end is None:
+        return '{}[{}]'.format(vvar, str(start))
+    else:
+        assert isinstance(end, int) and (end >= 0)
+        return  '{}[{}:{}]'.format(vvar, str(start), str(end))
