@@ -53,6 +53,7 @@ def imgDownSample(data, n=1):
 
 # merge channels into one
 # flag: specify which channel is used
+# TODO: should change this function to channel selection
 def imgMergeChannel(data, flag=(True, True, True)):
     assert len(flag) == 3
     s = [i for i in range(3) if flag[i]]
@@ -79,12 +80,22 @@ def imgCheck(data):
     return data.shape[2] == data.shape[3]
 
 # pad the image with 0s to its original size (n_data, 3, 32, 32) and 8-bit precision
-def imgPad(data, nLSB):
+def imgPad(data, fMergeCh, nLSB):
     assert data.shape[2] == data.shape[3]
     assert 32 % data.shape[2] == 0
+    assert (fMergeCh is None) or (sum(fMergeCh) == 1)
+
     k = 32 // data.shape[2]
     ret = np.zeros((data.shape[0], data.shape[1], 32, 32), dtype=np.uint8)
     ret[:, :, ::k, ::k] = (data << nLSB)
+
+    if fMergeCh is not None:
+        assert data.shape[1] == 1
+        fill = np.zeros((data.shape[0], 1, 32, 32), dtype=np.uint8)
+        ret = [ret if fm else fill for fm in fMergeCh]
+        ret = np.concatenate(ret, axis=1)
+    
+    assert ret.shape == (data.shape[0], 3, 32, 32)
     return ret
 
 # overall image prepocessing
@@ -97,7 +108,7 @@ def imgPrepro(data, labels=None, nPeel=0, nStride=1, fMergeCh=None, nLSB=0, fBla
         ret = imgMergeChannel(ret, fMergeCh)
     ret = imgRemoveLSB(ret, nLSB)
     if fPad:
-        ret = imgPad(ret, nLSB)
+        ret = imgPad(ret, fMergeCh, nLSB)
     if fBlast:
         ret = imgBitBlast(ret, 8 if fPad else (8-nLSB))
     assert imgCheck(ret)
