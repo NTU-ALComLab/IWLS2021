@@ -1,21 +1,26 @@
-from .abcCmd import abcSyn, abcParseInfo, abcEval, abcGetAcc
+import subprocess
+from .abcCmd import abcSyn, abcEval
 from .yosysCmd import yosysSyn
 
-ABC_PATH = 'tools/abc'
-YOSYS_PATH = 'tools/yosys'
+ABC_PATH = 'tools/abc/abc'
+YOSYS_PATH = 'tools/yosys/yosys'
 
-def sysExec(sysCmd):
-    ret = subprocess.check_output(sysCmd, shell=True)
-    return ret.decode('utf-8')
-
-def syn(fin, fout, abcPath=ABC_PATH, yosysPath=YOSYS_PATH):
-    fout1, fout2 = fout + '.aig', fout + '_opt.aig' 
-    sysExec(yosysSyn(fin, fout1, yosysPath))
-    stat = sysExec(abcSyn(fout1, fout2, abcPath))
-    ret = abcParseInfo(stat)
+def sysExec(sysCmd, verbose):
+    ret = subprocess.check_output(sysCmd, shell=True).decode('utf-8')
+    if verbose: print(ret)
     return ret
 
-def eval(fn, binData, abcPath=ABC_PATH):
-    stat = sysExec(abcEval(fn, binData, abcPath))
-    ret = abcGetAcc(stat)
-    return ret
+def syn(fin, fout, verbose=False, abcPath=ABC_PATH, yosysPath=YOSYS_PATH):
+    assert fout.endswith('.aig')
+    fout_ = fout.replace('.aig', '_orig.aig')
+    #fout1, fout2 = fout + '.aig', fout + '_opt.aig' 
+    log = fout.replace('.aig', '_info.json')
+    sysExec(yosysSyn(fin, fout_, yosysPath), verbose)
+    sysExec(abcSyn(fout_, fout, log, abcPath), verbose)
+    return log
+
+def eval(fn, binData, verbose=False, abcPath=ABC_PATH):
+    assert fn.endswith('.aig')
+    log = fn.replace('.aig', '_acc.json')
+    sysExec(abcEval(fn, binData, log, abcPath), verbose)
+    return log
