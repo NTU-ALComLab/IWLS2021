@@ -1,9 +1,9 @@
 from argparse import ArgumentParser
-import os, utils, trainer
+import os, utils, trainer, syn
 
 def getArgs():
     parser = ArgumentParser(description='sample script for training.')
-    parser.add_argument('--data_path', type=str, default='./data/raw/train_data.pk')
+    parser.add_argument('--data_path', type=str, default='data/raw/train_data.pk')
     parser.add_argument('--output_path', type=str, default=None)
     parser.add_argument('--clf_type', default='dt', type=str, choices=['dt', 'rf', 'df'])  # lut not yet supported
     parser.add_argument('--mode', default='dir', type=str, choices=['dir', 'oaa', 'gag', 'oao'])
@@ -12,6 +12,7 @@ def getArgs():
     parser.add_argument('--verbose', action='store_true')
     parser.add_argument('--prepro_config', default=None, type=str)
     parser.add_argument('--train_config', default=None, type=str)
+    parser.add_argument('--eval_bin', default='data/raw_bin/data_batch_5.bin', type=str)
     args = parser.parse_args()
     print('Running with following command line arguments: {}'.format(args))
     return args
@@ -63,19 +64,38 @@ if __name__ == '__main__':
     # write circuits and logging
     if args.output_path is not None:
         os.makedirs(args.output_path, exist_ok=True)
+        
+        # dump circuits
+        tr.dump(args.output_path, 8-preConfig['nLSB'])
 
+        # sythesize into AIG
+        model_aig = os.path.join(args.output_path, 'model.aig')
+        size_log = syn.syn(os.path.join(args.output_path, '*.v'), model_aig)
+        size_log = utils.loadConfig(size_log)
+        if args.verbose:
+            print('aig_size:', size_log['and'])
+
+        # circuit acc. evaluation
+        if args.eval_bin is not None:
+            eval_log = syn.eval(model_aig, args.eval_bin)
+            eval_log = utils.loadConfig(eval_log)
+            eval_log['acc'] = eval_log['correct'] / eval_log['total']
+            if args.verbose:
+                print('aig_acc:', eval_log['acc'])
+        
         # dump log
-        log = vars(args)
-        log['train_acc'] = float(train_acc)
-        log['val_acc'] = float(val_acc)
-        utils.dumpConfig(log, os.path.join(args.output_path, 'log.yaml'))
         #with open(os.path.join(args.output_path, 'acc.log'), 'w') as fp:
         #    fp.write('training acc: {}\n'.format(str(train_acc)))
         #    fp.write('validation acc: {}\n'.format(str(val_acc)))
-        
+        log = vars(args)
+        log['train_acc'] = float(train_acc)
+        log['val_acc'] = float(val_acc)
+        log['n_aig'] = size_log['and']
+        if args.eval_bin is not None:
+            log['aig_acc'] = eval_log['acc']
+        utils.dumpConfig(log, os.path.join(args.output_path, 'log.yaml'))
+
         # dump config
         utils.dumpConfig(preConfig, os.path.join(args.output_path, 'pre_config.yaml'))
         utils.dumpConfig(tr.clfs[0].params, os.path.join(args.output_path, 'train_config.yaml'))
 
-        # dump circuits
-        tr.dump(args.output_path, 8-preConfig['nLSB'])
