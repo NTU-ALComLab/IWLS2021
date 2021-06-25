@@ -99,7 +99,7 @@ def imgPad(data, fMergeCh, nLSB):
     return ret
 
 # overall image prepocessing
-def imgPrepro(data, labels=None, nPeel=0, nStride=1, fMergeCh=None, nLSB=0, fBlast=True, fPad=True):
+def imgPrepro(data, labels=None, nPeel=0, nStride=1, fMergeCh=None, nLSB=0, fBlast=False, fPad=True):
     if labels is None:
         nStride = abs(nStride)
     ret = imgPeel(data, nPeel)

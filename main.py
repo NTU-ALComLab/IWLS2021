@@ -6,7 +6,7 @@ def getArgs():
     parser.add_argument('--data_path', type=str, default='data/raw/train_data.pk')
     parser.add_argument('--output_path', type=str, default=None)
     parser.add_argument('--clf_type', default='dt', type=str, choices=['dt', 'rf', 'df'])  # lut not yet supported
-    parser.add_argument('--mode', default='dir', type=str, choices=['dir', 'oaa', 'gag', 'oao'])
+    parser.add_argument('--mode', default='dir', type=str, choices=['dir', 'oaa', 'gag', 'oao'])#, 'col'])
     parser.add_argument('--n_jobs', default=1, type=int)
     parser.add_argument('--data_aug', default=4, type=int)
     parser.add_argument('--verbose', action='store_true')

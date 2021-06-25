@@ -11,6 +11,7 @@ class Trainer():
     # - 'oaa': one-against-all, one-hot encoding with n outputs (balanced class weight in dtree is preferred)
     # - 'gag': group-against-group, vote by [C(n, n/2) / ((n+1) % 2 + 1)] binary classifiers (not yet tested if n is odd)
     # - 'oao': one-against-one, vote by C(n, 2) binary classifers
+    # - 'col': removed
     def __init__(self, clf, nClass=10, mode='dir', verbose=True, clfParams=dict()):
         self.nClass = nClass
         self.mode = mode
@@ -30,6 +31,8 @@ class Trainer():
                 n //= 2
         elif self.mode == 'oao':
             n = comb(self.nClass, 2, exact=1)
+        #elif self.mode == 'col':
+        #    n = 3
         else:
             print(self.mode, 'mode not supported.')
             assert False
@@ -42,6 +45,16 @@ class Trainer():
 
         #for dt, lab in zip(self.dtrees, traLabs):
         #    dt.train(flatDat, lab)
+
+        #def _trainCol_(clf, data, lab):
+        #    data_ = np.zeros(data.shape, dtype=np.uint8)
+        #    data_[:, clf.idx] = data[:, clf.idx]
+        #    clf.train(data_, lab)
+        #    return clf
+
+        #if self.mode == 'col':
+        #    self.clfs = Parallel(n_jobs=nJob, backend='threading')(delayed(_trainCol_)(clf, data, traLabs[0]) for clf in self.clfs)
+        #else:
         
         # parallel training
         Parallel(n_jobs=nJob, backend='threading')(delayed(clf.train)(data, lab) for clf, lab in zip(self.clfs, traLabs))
@@ -57,11 +70,11 @@ class Trainer():
             print('Clf validation acc={}'.format(str(valAcc)))
         
         return traAcc, valAcc
-
+    
     # training labels preprocessing
     def __traLabPrep__(self, labels):
         # 'dir': same labels as given
-        if self.mode == 'dir':
+        if (self.mode == 'dir'):# or (self.mode == 'col'):
             return [labels]
         # 'oaa': one-hot encoding of labels
         elif self.mode == 'oaa':
@@ -131,6 +144,12 @@ class Trainer():
             #    else:
             #        rret.append(x.argmax())
             #return np.array(rret)
+        #elif self.mode == 'col':
+        #    ret = np.zeros((self.nClass, preds.shape[1]))
+        #    for i in range(preds.shape[0]):
+        #        for j in range(preds.shape[1]):
+        #            ret[preds[i, j], j] += 1
+        #    return np.argmax(ret, axis=0)
         else:
             print(self.mode, 'mode not supported.')
             assert False
@@ -143,13 +162,13 @@ class Trainer():
         acc = np.sum(np.array(preds)==np.array(labels)) / len(labels)
         return preds, acc
 
-    # fn: folder to dump the circuit files
-    def dump(self, fn, nBit):
+    # path: folder to dump the circuit files
+    def dump(self, path, nBit, pre=''):
         nOut = self.nClass if (self.mode == 'dir') else 1
         
-        clfList = ['clf_{}'.format(str(i)) for i in range(len(self.clfs))]
+        clfList = [pre+'clf_{}'.format(str(i)) for i in range(len(self.clfs))]
         for name, clf in zip(clfList, self.clfs):
-            name = os.path.join(fn, name + '.v')
+            name = os.path.join(path, name + '.v')
             clf.dump(name, nBit, nOut)
 
-        BinVoter_write(os.path.join(fn, 'predictor.v'), self.mode, self.nClass, clfList)
+        BinVoter_write(os.path.join(path, pre+'predictor.v'), self.mode, self.nClass, clfList)
