@@ -1,0 +1,14 @@
+
+Requirements: networkx
+
+Steps:
+1. Copy the generated verilog files into the folder "oriCkt/"
+2. run modifyCkt.sh, "bash modifyCkt.sh"
+3. The modified verilog files will be in the folder "modifiedCkt/"
+
+Only the following files will be modified:
+    conv11.v
+    conv21.v
+    conv22.v
+    dense1.v
+    dense.v
