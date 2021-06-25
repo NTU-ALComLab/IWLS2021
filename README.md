@@ -39,6 +39,10 @@ Please install the required pip packages specified in `requirements.txt`.
 pip3 install -r requirements.txt
 ```
 We also provide the `Dockerfile` to build the docker image capable of executing our codes.
+```
+docker build -t submit ./
+docker run -it submit
+```
 
 ## How To Run
 1. Clone and build ABC in `tools/abc/`.
@@ -69,6 +73,6 @@ python3 small.py
 python3 medium.py
 ```
 
-5. To generate the large circuit (with no more than 1,00,000 AIG-nodes), please follow the instructions in `large/`. Unfortunately, we have not had enough time to integrate all the procedures into a single script.
+5. To generate the large circuit (with no more than 1,00,000 AIG-nodes), please follow the instructions in `large/`. Unfortunately, we have not had enough time to integrate the overall procedure into a single script. The codes are submitted for your review.
 
 \* Note that there is some randomness in our procedures, therefore the results may differ each time. Please let us know if there is any problem executing the programs.
