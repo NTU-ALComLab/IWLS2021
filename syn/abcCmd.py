@@ -11,6 +11,7 @@ def abcSyn(fin, fout, log, abcPath):
     cmd = ['r {}'.format(fin)]
     cmd += ['resyn', 'resyn2', 'resyn2a', 'resyn3', 'resyn2rs']
     cmd += ['dc2', 'dc2 -b'] * 3
+    cmd += ['ifraig', 'resyn2rs']
     cmd += ['&get', '&w {}'.format(fout), '&ps -D {}'.format(log)]
     return abcCmd(cmd, abcPath)
 
