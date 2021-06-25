@@ -82,7 +82,7 @@ for i in range(m):
     trs.append(tr)
 
 ClfEns(output_path, 'medium.v', clfList, 10, 10)
-syn.syn(os.path.join(output_path, '*.v'), os.path.join(output_path, 'medium.aig'))
+log = syn.syn(os.path.join(output_path, '*.v'), os.path.join(output_path, 'medium.aig'))
 log = utils.loadConfig(log)
 
 data, labels = utils.imgPrepro(data, labels, **preConfig)
