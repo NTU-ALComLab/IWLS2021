@@ -13,7 +13,7 @@ preConfig = {
 dtParams = {
     'criterion': 'gini',
     'max_depth': 15,
-    'ccp_alpha': 0.0005, #0.001
+    'ccp_alpha': 0.0005,
 }
 
 x = utils.loadConfig('data/raw/train_data.pk')
@@ -27,4 +27,8 @@ acc = tr.train(data, labels, nJob=10)
 output_path = 'small'
 os.makedirs(output_path, exist_ok=True)
 tr.dump(output_path, 8-preConfig['nLSB'])
-syn.syn(os.path.join(output_path, '*.v'), os.path.join(output_path, 'small.aig'))
+log = syn.syn(os.path.join(output_path, '*.v'), os.path.join(output_path, 'small.aig'))
+log = utils.loadConfig(log)
+
+print('training acc:', acc[0])
+print('circuit size:', log['and'])
