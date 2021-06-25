@@ -162,8 +162,6 @@ def train_with_original_data(model,trainX, trainY, testX, testY ):
 
  
   model.fit(trainX, trainY , batch_size=150, epochs=150, validation_split=0.1)
-  _, acc = model.evaluate(testX, testY, verbose=0)
-  print('> %.3f' % (acc * 100.0))
   '''
   outputs=[]
   keras_function = K.function([model.input], [model.layer[2].output])
@@ -185,10 +183,6 @@ def train_with_augmented_data(model,trainX, trainY, testX, testY):
          subset='training'), 
           validation_data=datagen.flow(trainX, trainY,
          batch_size=15, subset='validation'), epochs=30)
-
-  _, acc = model.evaluate(testX, testY, verbose=0)
-  print('> %.3f' % (acc * 100.0))
-
 
 #Train with floating point
 
@@ -222,9 +216,6 @@ import os
 
 drive.mount('/content/gdrive/',force_remount=True)
 
-#trainX, trainY, testX, testY = load_dataset()
-_, acc = model2.evaluate(testX[:,0:16,0:16,], testY, verbose=0)
-print('> %.3f' % (acc * 100.0))
 
 ##view weights
 
@@ -291,23 +282,6 @@ def last_to_first(test,inputShape):
         result[out_index] = test[in_index]
 
   return result
-
-###for debug
-
-trainX, trainY, _ = load_dataset()
-for file_num in range(2000,3500):
-  fout = open("/content/gdrive/MyDrive/data2000_3000/test"+str(file_num )+".txt","w")
-  a=np.array(testX[file_num,:,:,:])
-  a=a.flatten()
-  a=last_to_first(a,[32,32,3])
-
-  for j in range(len(a)): 
-    b=format(a[j], "b")
-    fout.write(b)
-    fout.write("\n")
-
-
-#np.argmax(b)
 
 ##for debug
 
