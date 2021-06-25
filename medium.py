@@ -96,5 +96,5 @@ for i in range(preds.shape[0]):
 res_ = np.argmax(res, axis=0)
 acc = np.sum(np.array(res_)==np.array(labels)) / len(labels)
 
-print('training acc:', acc[0])
+print('training acc:', acc)
 print('circuit size:', log['and'])
