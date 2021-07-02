@@ -24,7 +24,7 @@ We also apply the following methods on the CIFAR-10 dataset.
 - Truncating several least significant bits of each image pixel.
 
 ## Our Submission
-The 3 AIGs `small.aig`, `medium.aig` and `large.aig` (and `large_fixed.aig`[^1]) can be found in `submit_AIGs/`. Their sizes and accuracy on the testing dataset are listed below.
+The 3 AIGs `small.aig`, `medium.aig` and `large.aig` (and `large_fixed.aig`[<sup>1</sup>](#1)) can be found in `submit_AIGs/`. Their sizes and accuracy on the testing dataset are listed below.
 
 |                   | `small.aig` | `medium.aig`| `large.aig` | `large_fixed.aig` |
 |-------------------|-------------|-------------|-------------|-------------------|
@@ -33,7 +33,7 @@ The 3 AIGs `small.aig`, `medium.aig` and `large.aig` (and `large_fixed.aig`[^1])
 
 We only use the CIFAR-10 testing data **ONCE** for each submitted circuit in the 3 size categories for the purpose of final evaluation right before the submission. That is, we never use the testing dataset during the the course of our research.
 
-[^1]: test footnotes.
+[^1]: test footnotes. <a class="anchor" id="1"></a>: hahaha
 
 ## Requirements
 Please install the required pip packages specified in `requirements.txt`.
