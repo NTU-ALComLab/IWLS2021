@@ -24,14 +24,16 @@ We also apply the following methods on the CIFAR-10 dataset.
 - Truncating several least significant bits of each image pixel.
 
 ## Our Submission
-The 3 AIGs `small.aig`, `medium.aig` and `large.aig` can be found in `submit_AIGs`. Their sizes and accuracy on the testing dataset are listed below.
+The 3 AIGs `small.aig`, `medium.aig` and `large.aig` (and `large_fixed.aig`[^1]) can be found in `submit_AIGs/`. Their sizes and accuracy on the testing dataset are listed below.
 
-|                   | `small.aig` | `medium.aig`| `large.aig` |
-|-------------------|-------------|-------------|-------------|
-| size (#AIG-nodes) |       9,697 |      97,350 |     995,247 |
-|  testing acc. (%) |       39.31 |       44.69 |       54.68 |
+|                   | `small.aig` | `medium.aig`| `large.aig` | `large_fixed.aig` |
+|-------------------|-------------|-------------|-------------|-------------------|
+| size (#AIG-nodes) |       9,697 |      97,350 |     995,247 |           989,043 |
+|  testing acc. (%) |       39.31 |       44.69 |       54.68 |             55.82 |
 
 We only use the CIFAR-10 testing data **ONCE** for each submitted circuit in the 3 size categories for the purpose of final evaluation right before the submission. That is, we never use the testing dataset during the the course of our research.
+
+[^1]: test footnotes.
 
 ## Requirements
 Please install the required pip packages specified in `requirements.txt`.
@@ -44,7 +46,7 @@ docker build -t submit ./
 docker run -it submit
 ```
 
-## How To Run
+## How To Run [^2]
 1. Clone and build ABC in `tools/abc/`.
 ```
 cd tools
@@ -75,4 +77,4 @@ python3 medium.py
 
 5. To generate the large circuit (with no more than 1,000,000 AIG-nodes), please follow the instructions in `large/`. Unfortunately, we have not had enough time to integrate the overall procedure into a single script. The codes are submitted for your review.
 
-\* Note that there is some randomness in our procedures, therefore the results may differ each time. Please let us know if there is any problem executing the programs.
+[^2]: Note that there is some randomness in our procedures, therefore the results may differ each time. Please let us know if there is any problem executing the programs.
