@@ -24,7 +24,7 @@ We also apply the following methods on the CIFAR-10 dataset.
 - Truncating several least significant bits of each image pixel.
 
 ## Our Submission
-The 3 AIGs `small.aig`, `medium.aig` and `large.aig` (and `large_fixed.aig`[<sup>1</sup>](#1)) can be found in `submit_AIGs/`. Their sizes and accuracy on the testing dataset are listed below.
+The 3 AIGs `small.aig`, `medium.aig` and `large.aig` (and `large_fixed.aig`[<sup>[1]</sup>](#fn1)) can be found in `submit_AIGs/`. Their sizes and accuracy on the testing dataset are listed below.
 
 |                   | `small.aig` | `medium.aig`| `large.aig` | `large_fixed.aig` |
 |-------------------|-------------|-------------|-------------|-------------------|
@@ -33,7 +33,7 @@ The 3 AIGs `small.aig`, `medium.aig` and `large.aig` (and `large_fixed.aig`[<sup
 
 We only use the CIFAR-10 testing data **ONCE** for each submitted circuit in the 3 size categories for the purpose of final evaluation right before the submission. That is, we never use the testing dataset during the the course of our research.
 
-[^1]: test footnotes. <a class="anchor" id="1"></a>: hahaha
+<a class="anchor" id="fn1">[1]</a>: There was originally a bug in our program for large circuit generation which incurred a ≈1% accuracy loss. We managed to fix that bug, however, after the submission deadline (June 25, 2021) of the contest. The newly generated large circuit `large_fixed.aig` is more accurate and at the same time has a smaller size when compared to the previously submimitted one `large.aig`.
 
 ## Requirements
 Please install the required pip packages specified in `requirements.txt`.
@@ -46,7 +46,7 @@ docker build -t submit ./
 docker run -it submit
 ```
 
-## How To Run [^2]
+## How To Run [<sup>[2]</sup>](#fn2)
 1. Clone and build ABC in `tools/abc/`.
 ```
 cd tools
@@ -77,4 +77,4 @@ python3 medium.py
 
 5. To generate the large circuit (with no more than 1,000,000 AIG-nodes), please follow the instructions in `large/`. Unfortunately, we have not had enough time to integrate the overall procedure into a single script. The codes are submitted for your review.
 
-[^2]: Note that there is some randomness in our procedures, therefore the results may differ each time. Please let us know if there is any problem executing the programs.
+<a class="anchor" id="fn2">[2]</a>: Note that there is some randomness in our procedures, therefore the results may differ each time. Please let us know if there is any problem executing the programs.
