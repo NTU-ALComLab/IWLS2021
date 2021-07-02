@@ -2,6 +2,8 @@ import numpy as np
 import pickle
 from Covering import Covering
 
+numBits=5
+
 def getInd(s):
     ind1=s.find('[')
     ind2=s.find(']')
@@ -30,8 +32,8 @@ def writeSharing(mat,sharedW,unsharedW,file):
         c_set=cover.c_setPos| cover.c_setNeg
         egRInd=list(cover.r_set)[0]
         for col in c_set:
-            xInd=col//4
-            shift=3-col%4
+            xInd=col//numBits
+            shift=(numBits-1)-col%numBits
             neg=(mat[egRInd,col]==-1)
             term="$signed("+ ("-{" if neg else "{")
             term+= (f"{shift+1}'b0,x{xInd}" +"}")
@@ -135,10 +137,10 @@ for i,layer in enumerate(layerNames):
             
             for col in unSharedWs[layer][oInd]:
                 
-                xInd=col//4
+                xInd=col//numBits
                 #print(col,',',xInd)
                 
-                shift=3-col%4
+                shift=(numBits-1)-col%numBits
                 neg=(mat[oInd,col]==-1)
                 term="$signed("+ ("-{" if neg else "{")
                 term+= (f"{shift+1}'b0,x{xInd}" +"}")
