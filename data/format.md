@@ -4,7 +4,7 @@
 This directory contains the CIFAR-10 dataset downloaded from its [official website](https://www.cs.toronto.edu/~kriz/cifar.html). The Python version of the dataset is located in the folder `raw/`, whereas the binary version is located in `raw_bin/`.
 
 ## Size of the Dataset
-The CIFAR-10 dataset consists of 60,000 32x32 colour (RGB channels) images with each pixel being 8-bit precision. A single image sums up to 3x32x32x8=24,576 bits of information. All images are classfied into 10 classes and each class contains 6,000 images. There are 50,000 training images (`data_batch` 1~5) and 10000 test images (`test_batch`). 
+The CIFAR-10 dataset consists of 60,000 32x32 colour (RGB channels) images with each pixel being 8-bit precision. A single image sums up to 3x32x32x8=24,576 bits of information. All images are classfied into 10 classes and each class contains 6,000 images. There are 50,000 training images (`data_batch` 1~5) and 10,000 test images (`test_batch`). 
 
 ## How to Load
 For the our ease-of-use, we re-organized the orginal Python version of the dataset with the following modifications:  
