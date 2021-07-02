@@ -82,7 +82,7 @@ for i in range(m):
     trs.append(tr)
 
 ClfEns(output_path, 'medium.v', clfList, 10, 10)
-syn.syn(os.path.join(output_path, '*.v'), os.path.join(output_path, 'medium.aig'))
+log = syn.syn(os.path.join(output_path, '*.v'), os.path.join(output_path, 'medium.aig'))
 log = utils.loadConfig(log)
 
 data, labels = utils.imgPrepro(data, labels, **preConfig)
@@ -96,5 +96,5 @@ for i in range(preds.shape[0]):
 res_ = np.argmax(res, axis=0)
 acc = np.sum(np.array(res_)==np.array(labels)) / len(labels)
 
-print('training acc:', acc[0])
+print('training acc:', acc)
 print('circuit size:', log['and'])
