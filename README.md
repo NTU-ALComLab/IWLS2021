@@ -15,7 +15,7 @@ From the 10 classes of CIFAR-10 dataset, we select 2 classes and train a decisio
 We train 10 'small' classifers described in the previous section with different subsets of the dataset. The final prediction is decided by majority voting of the 10 classifers.
 
 ### Learning Large Circuits
-We train a CNN model with grouped convolutions and weights restricted to the powers of 2 (i.e. 2^-1, 2^0, 2^1 ...) and 0.0. The quantized CNN model is then synthesized with sub-adder sharing to reduce the circuit size.
+We train a convolutional neural network model with grouped convolutions and weights restricted to the powers of 2 (i.e. 2^-1, 2^0, 2^1 ...) and 0s. The quantized CNN model is then synthesized with sub-adder sharing to reduce the circuit size.
 
 ### Others
 We also apply the following methods on the CIFAR-10 dataset.
