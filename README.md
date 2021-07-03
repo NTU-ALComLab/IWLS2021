@@ -84,4 +84,9 @@ python3 medium.py
 
 5. To generate the large circuit (with no more than 1,000,000 AIG-nodes), please follow the instructions in `large/`. Unfortunately, we have not had enough time to integrate the overall procedure into a single script. The codes are submitted for your review.
 
+6. If you want to train a decision-tree-based model with customized parameters instead of our fine-tuned ones, run the script `main.py` and use the flag `--help` to see the help messages.
+```
+python3 main.py     # execute with default arguments
+```
+
 <a class="anchor" id="fn2">[2]</a>: Note that there is some randomness in our procedures, therefore the results may differ each time. Please let us know if there is any problem executing the programs.
