@@ -23,7 +23,7 @@ We also apply the following methods on the CIFAR-10 dataset.
 - Image augmentation.
 - Truncating several least significant bits of each image pixel.
 
-To optimize the AIG circuit, we use the combination of [ABC](https://github.com/berkeley-abc/abc) commands _dc2_, _resyn_, _resyn2rs_ and _ifraig_.
+To optimize the AIG circuit, we use a combination of [ABC](https://github.com/berkeley-abc/abc) commands _dc2_, _resyn_, _resyn2rs_ and _ifraig_.
 
 ## Our Submission
 The 3 AIGs `small.aig`, `medium.aig` and `large.aig` (and `large_fixed.aig`[<sup>[1]</sup>](#fn1)) can be found in `submit_AIGs/`. Their sizes and accuracy on the testing dataset are listed below.
@@ -44,15 +44,20 @@ pip3 install -r requirements.txt
 ```
 We also provide the `Dockerfile` to build the docker image capable of executing our codes.
 ```
-docker build -t submit ./
-docker run -it submit
+docker build -t IWLS2021 ./
+docker run -it IWLS2021
 ```
 
 ## How To Run [<sup>[2]</sup>](#fn2)
+0. It is recommended to clone this repository with the `--recurse-submodules` flag. 
+```
+git clone --recurse-submodules git@github.com:Po-Chun-Chien/IWLS2021.git
+```
+
 1. Clone and build [ABC](https://github.com/berkeley-abc/abc) in `tools/abc/`.
 ```
 cd tools
-git clone git@github.com:berkeley-abc/abc.git
+git clone git@github.com:berkeley-abc/abc.git   # if it hasn't already been cloned
 cd abc
 make
 cd ../..
@@ -61,7 +66,7 @@ cd ../..
 2. Clone and build [YOSYS](https://github.com/YosysHQ/yosys) in `tools/yosys/`.
 ```
 cd tools
-git clone git@github.com:YosysHQ/yosys.git
+git clone git@github.com:YosysHQ/yosys.git      # if it hasn't already been cloned
 cd yosys
 make
 cd ../..
