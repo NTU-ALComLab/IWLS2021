@@ -50,43 +50,43 @@ docker run -it IWLS2021
 
 ## How To Run [<sup>[2]</sup>](#fn2)
 0. It is recommended to clone this repository with the `--recurse-submodules` flag. 
-```
-git clone --recurse-submodules git@github.com:Po-Chun-Chien/IWLS2021.git
-```
+    ```
+    git clone --recurse-submodules git@github.com:Po-Chun-Chien/IWLS2021.git
+    ```
 
 1. Clone and build [ABC](https://github.com/berkeley-abc/abc) in `tools/abc/`.
-```
-cd tools
-git clone git@github.com:berkeley-abc/abc.git   # if it hasn't already been cloned
-cd abc
-make
-cd ../..
-```
+    ```
+    cd tools
+    git clone git@github.com:berkeley-abc/abc.git   # if it hasn't already been cloned
+    cd abc
+    make
+    cd ../..
+    ```
 
 2. Clone and build [YOSYS](https://github.com/YosysHQ/yosys) in `tools/yosys/`.
-```
-cd tools
-git clone git@github.com:YosysHQ/yosys.git      # if it hasn't already been cloned
-cd yosys
-make
-cd ../..
-```
+    ```
+    cd tools
+    git clone git@github.com:YosysHQ/yosys.git      # if it hasn't already been cloned
+    cd yosys
+    make
+    cd ../..
+    ```
 
 3. To generate the small circuit (with no more than 10,000 AIG-nodes), run the script `small.py`. The output circuit can be found at `small/small.aig`.
-```
-python3 small.py
-```
+    ```
+    python3 small.py
+    ```
 
 4. To generate the medium circuit (with no more than 100,000 AIG-nodes), run the script `medium.py`. The output circuit can be found at `medium/medium.aig`.
-```
-python3 medium.py
-```
+    ```
+    python3 medium.py
+    ```
 
 5. To generate the large circuit (with no more than 1,000,000 AIG-nodes), please follow the instructions in `large/`. Unfortunately, we have not had enough time to integrate the overall procedure into a single script. The codes are submitted for your review.
 
 6. If you want to train a decision-tree-based model with customized parameters instead of our fine-tuned ones, run the script `main.py` and use the flag `--help` to see the help messages.
-```
-python3 main.py     # execute with default arguments
-```
+    ```
+    python3 main.py     # execute with default arguments
+    ```
 
 <a class="anchor" id="fn2">[2]</a>: Note that there is some randomness in our procedures, therefore the results may differ each time. Please let us know if there is any problem executing the programs.
