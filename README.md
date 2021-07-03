@@ -89,4 +89,6 @@ docker run -it IWLS2021
     python3 main.py     # execute with default arguments
     ```
 
+testing inline math $x^1 x_1$.
+
 <a class="anchor" id="fn2">[2]</a>: Note that there is some randomness in our procedures, therefore the results may differ each time. Please let us know if there is any problem executing the programs.
