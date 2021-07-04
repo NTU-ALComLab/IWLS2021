@@ -44,8 +44,8 @@ pip3 install -r requirements.txt
 ```
 We also provide the `Dockerfile` to build the docker image capable of executing our codes.
 ```
-docker build -t IWLS2021 ./
-docker run -it IWLS2021
+docker build -t iwls2021 ./
+docker run -it iwls2021
 ```
 
 ## How To Run [<sup>[2]</sup>](#fn2)
