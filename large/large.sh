@@ -1,5 +1,5 @@
 
-python3 revised_circuit.py
+python3 revised_gencircuit.py
 
 mkdir -p covering
 mkdir -p parseRet
