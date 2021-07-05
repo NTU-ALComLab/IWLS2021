@@ -22,7 +22,7 @@ def getShift(s):
         return int(s[ind1+6:ind1+7])
 
 numBits=5
-cktFolder="oriCkt"
+cktFolder="cktFolder"
 layerNames=["conv11","conv21","conv22","dense1","dense"]
 zeroMats=[np.zeros((640,numBits*768)),np.zeros((288,numBits*512)),np.zeros((208,numBits*384)),np.zeros((20,numBits*496)),np.zeros((10,numBits*20))]
 #layerNames=["conv11"]
@@ -47,15 +47,15 @@ for i,layer in enumerate(layerNames):
                 if term.find("-$signed")!=-1:
                     terms[j]=term.split("-$signed")[0]
             stringRec[layer].append(terms)
-            print(terms)
+            #print(terms)
             for term in terms:
                 if term.find("x")== -1:
                     continue
-                print("term: " ,term)
+                #print("term: " ,term)
                 neg=(term.find("-")!=-1)
                 xInd=getXInd(term)
                 shift=getShift(term)
-                print(neg,xInd,shift,sep=' ')
+                #print(neg,xInd,shift,sep=' ')
                 matrices[layer][oInd,xInd*numBits+(numBits-shift)-1]= -1 if neg else 1
             
         lInd+=1

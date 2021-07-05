@@ -5,8 +5,8 @@ mkdir -p covering
 mkdir -p parseRet
 mkdir -p modifiedCkt
 
-cp bind.v modifiedCkt
-cp top.v modifiedCkt
+cp cktFolder/bind.v modifiedCkt
+cp cktFolder/top.v modifiedCkt
 
 
 python3 parseVerilog.py
