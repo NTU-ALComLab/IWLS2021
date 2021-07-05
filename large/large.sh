@@ -1,4 +1,4 @@
-
+mkdir -p cktFolder
 python3 revised_gencircuit.py
 
 mkdir -p covering
