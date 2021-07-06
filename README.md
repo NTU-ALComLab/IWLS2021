@@ -18,7 +18,7 @@ We train 10 'small' classifers described in the previous section with different 
 We train a convolutional neural network model with grouped convolutions and weights restricted to the powers of 2 (i.e. 2^-1, 2^0, 2^1 ...) and 0s. The quantized CNN model is then synthesized with sub-adder sharing to reduce the circuit size.
 
 ### Others
-We also apply the following methods on the CIFAR-10 dataset.
+We apply the following methods on the CIFAR-10 dataset (You may refer to [`data/format.md`](https://github.com/Po-Chun-Chien/IWLS2021/blob/submit/data/format.md) to see how the dataset is parsed and re-organized).
 - Image downsampling.
 - Image augmentation.
 - Truncating several least significant bits of each image pixel.
@@ -26,16 +26,19 @@ We also apply the following methods on the CIFAR-10 dataset.
 To optimize the AIG circuit, we use a combination of [ABC](https://github.com/berkeley-abc/abc) commands _dc2_, _resyn_, _resyn2rs_ and _ifraig_.
 
 ## Our Submission
-The 3 AIGs `small.aig`, `medium.aig` and `large.aig` (and `large_fixed.aig`[<sup>[1]</sup>](#fn1)) can be found in `submit_AIGs/`. Their sizes and accuracy on the testing dataset are listed below.
+The 3 AIGs `small.aig`, `medium.aig` and `large.aig` (and `large_fixed.aig`[<sup>[1]</sup>](#fn1)) can be found in `submit_AIGs/`. Their sizes and accuracies[<sup>[2]</sup>](#fn2) (evaluated by ABC command `&iwls21test`) on the testing dataset are listed below.
 
 |                   | `small.aig` | `medium.aig`| `large.aig` | `large_fixed.aig` |
 |-------------------|-------------|-------------|-------------|-------------------|
 | size (#AIG-nodes) |       9,697 |      97,350 |     995,247 |           989,043 |
+| training acc. (%) |       44.96 |       56.77 |       59.33 |             60.73 |
 |  testing acc. (%) |       39.31 |       44.69 |       54.68 |             55.82 |
 
 We only use the CIFAR-10 testing data **ONCE** for each submitted circuit in the 3 size categories for the purpose of final evaluation right before the submission. That is, we never use the testing dataset during the the course of our research.
 
 <a class="anchor" id="fn1">[1]</a>: There was originally a bug in our program for large circuit generation which incurred a ≈1% accuracy loss. We managed to fix that bug, however, after the submission deadline (June 25, 2021) of the contest. The newly generated large circuit `large_fixed.aig` is more accurate and at the same time has a smaller size when compared to the previously submimitted one `large.aig`.
+
+<a class="anchor" id="fn2">[2]</a>: The training accuracy is computed by averaging the accuracy achieved on each of the training data batches (`data_batch` 1~5).
 
 ## Requirements
 Please install the required pip packages specified in `requirements.txt`.
@@ -48,7 +51,7 @@ docker build -t iwls2021 ./
 docker run -it iwls2021
 ```
 
-## How To Run [<sup>[2]</sup>](#fn2)
+## How To Run [<sup>[3]</sup>](#fn3)
 0. It is recommended to clone this repository with the `--recurse-submodules` flag. 
     ```
     git clone --recurse-submodules git@github.com:Po-Chun-Chien/IWLS2021.git
@@ -89,4 +92,4 @@ docker run -it iwls2021
     python3 main.py     # execute with default arguments
     ```
 
-<a class="anchor" id="fn2">[2]</a>: Note that there is some randomness in our procedures, therefore the results may differ each time. Please let us know if there is any problem executing the programs.
+<a class="anchor" id="fn3">[3]</a>: Note that there is some randomness in our procedures, therefore the results may differ each time. Please let us know if there is any problem executing the programs.
