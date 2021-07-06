@@ -32,7 +32,14 @@ def imgDownSample(data, n=1):
     assert (data.shape[2] % n == 0) and (data.shape[3] % n == 0)
     if not fAug:
         return data[:, :, ::n, ::n]
+    
     ret = [data[:, :, i::n, i::n] for i in range(n)]
+    #####
+    ## TODO: there should be more different offset settings
+    ## Should be as follows (not tested):
+    ## ret = [data[:, :, i::n, j::n] for i in range(n) for j in range(n)]
+    #####
+    
     return np.concatenate(ret)
     """
     ret = []
