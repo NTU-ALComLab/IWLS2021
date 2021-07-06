@@ -25,7 +25,7 @@ def getShift(s):
 def writeSharing(mat,sharedW,unsharedW,file):
     sharingMap=dict()
     for i in range(len(sharedW)):
-        file.write(f"wire [13:0] sharing{i};\n")
+        file.write(f"wire [30:0] sharing{i};\n")
     for i,cover in enumerate(sharedW):
         file.write(f"assign sharing{i} = ")
         terms=[]
@@ -49,6 +49,9 @@ def buildSharingMap(mat,sharedW):
     for i,cover in enumerate(sharedW):
         egRInd=list(cover.r_set)[0]
         c_set=cover.c_setPos | cover.c_setNeg
+        # print(i)
+        # print(cover)
+        # print(c_set)
         egCInd=list(c_set)[0]
         for row in cover.r_set:
             if row in sharingMap:
@@ -61,7 +64,7 @@ def buildSharingMap(mat,sharedW):
 
 cktFolder="cktFolder"
 layerNames=["conv11","conv21","conv22","dense1","dense"]
-#layerNames=["conv11"]
+#layerNames=["conv21"]
 sharedWs=dict()
 unSharedWs=dict()
 mats=dict()
@@ -72,18 +75,17 @@ for l in layerNames:
     #mats[l]=np.load(open(f"modified/rec/{l}.npy",'rb'),allow_pickle=True)
     mats[l]=np.load(f"parseRet/{l}.npy",allow_pickle=True)
     for r,row in enumerate(mats[l]):
-        for c in np.argwhere(row!=0).squeeze():
-            # if l=="conv21" and r==279:
-            #     print("c:",c)
+        nonZeroCols=np.argwhere(row!=0).squeeze() if np.argwhere(row!=0).squeeze().size>1 else [np.argwhere(row!=0).squeeze().tolist()]
+        for c in nonZeroCols:
             inSomeCover=False
             for cover in sharedWs[l]:
                 c_set=cover.c_setNeg|cover.c_setPos
                 if c in c_set and r in cover.r_set:
                     inSomeCover=True
                     break
-            # if l=="conv21" and r==279:
-            #     print("inSome cover:",inSomeCover)
             if not inSomeCover:
+                if c not in unSharedWs[l][r]:
+                    print(f"found entry not in cover, l:{l}, r:{r}, c:{c}")
                 unSharedWs[l][r].add(c)
     #chk covering
     numAllTerm=np.abs(mats[l]).sum(axis=1)
@@ -131,8 +133,7 @@ for i,layer in enumerate(layerNames):
             else:
                 #biasTerm=f"$signed(-{l.split('-')[-1][:-2]});\n"
                 biasTerm='-'+l.split('-')[-1]
-            if oInd==48:
-                print("bias term:",biasTerm)
+           
             terms=[]
             
             for col in unSharedWs[layer][oInd]:
