@@ -10,4 +10,4 @@ RUN cd IWLS2021/tools/abc && make -j8
 RUN git clone https://github.com/YosysHQ/yosys.git IWLS2021/tools/yosys
 RUN cd IWLS2021/tools/yosys && make -j8
 RUN pip3 install --upgrade pip
-RUN pip3 install -r requirements.txt
+RUN pip3 install -r IWLS2021/requirements.txt

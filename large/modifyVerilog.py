@@ -59,7 +59,7 @@ def buildSharingMap(mat,sharedW):
 
 
 
-cktFolder="oriCkt"
+cktFolder="cktFolder"
 layerNames=["conv11","conv21","conv22","dense1","dense"]
 #layerNames=["conv11"]
 sharedWs=dict()
@@ -161,7 +161,3 @@ for i,layer in enumerate(layerNames):
         lInd+=1
     fout.close()
     f.close()
-
-# for i,layer in enumerate(layerNames):
-#     with open(f"modified/rec/{layer}.npy",'wb') as f:
-#         np.save(f,mats[layer])
