@@ -269,6 +269,7 @@ for i in range(len(convs)):
 for i in range(len(fcs)):
     layers.append(fcs[i])
 
+#layers=['conv22']
 
 convCostCount=0
 fcCostCount=0
@@ -279,28 +280,6 @@ for lind,l in enumerate(layers):
         w=np.load(f)
     #t=torch.from_numpy(m)
     #w=t.numpy()
-    
-    #w=w*-1+1
-    #in fact no deletion
-    #remainbit=4
-    # delind=[i for i in range(w.shape[1]) if i%numBits>=remainbit]
-    # w=np.delete(w,delind,1)
-    
-    #switch last 2 bits
-    #for i in range(w.shape[0]):
-    #    for j in range(remainbit-2,w.shape[1],remainbit):
-    #        if w[i][j]==0 and w[i][j+1]==1:
-    #            w[i][j]=1
-    #            w[i][j+1]=0
-    
-    
-    
-    #w=np.transpose(w)
-    #w=np.array([[1,0,0,1,1,0],
-    #            [1,1,1,0,0,1],
-    #            [0,1,1,1,0,1],
-    #            [1,0,1,1,1,1]])
-    #w=generateW(200,200)
     bp=numBits*2
     initPairings=findInitPairing(w,bp)
     #print("init pairs:")
@@ -326,8 +305,6 @@ for lind,l in enumerate(layers):
             resultPairings.append(cover1)
         del initPairings[0]
     
-    #print("w:\n",w)
-    print("result:\n")
     totalGain=0
     for i,p in enumerate(resultPairings):
         #print("pairing {}:\n".format(i),p,'\n')
@@ -370,16 +347,18 @@ for lind,l in enumerate(layers):
                     unSharedWeight[r][1]=unSharedWeight[r][1]-cover.c_setPos
             elif len(cover.c_setNeg)>=1:
                 if w[r][list(cover.c_setNeg)[0]]==-1:
-                    unSharedWeight[r][0]=unSharedWeight[r][0]-cover.c_setNeg
+                    unSharedWeight[r][0]=unSharedWeight[r][0]-cover.c_setPos
                     unSharedWeight[r][1]=unSharedWeight[r][1]-cover.c_setNeg
                 else:
                     unSharedWeight[r][0]=unSharedWeight[r][0]-cover.c_setNeg
-                    unSharedWeight[r][1]=unSharedWeight[r][1]-cover.c_setNeg
+                    unSharedWeight[r][1]=unSharedWeight[r][1]-cover.c_setPos
+            
     #run several rounds for post pairing
     for run in range(500):
         print("run:",run)
 
         postPairing=findPairingSet(unSharedWeight,bp)
+        #print("postPairing:",postPairing)
         #print("newSharedWeightCount:",countUsedCols(postPairing))
         if countUsedCols(postPairing)==0:
             #print("no further improve when round=",run)
@@ -413,27 +392,31 @@ for lind,l in enumerate(layers):
                             unSharedWeight[r][1]=unSharedWeight[r][1]-cover.c_setPos
                     elif len(cover.c_setNeg)>=1:
                         if w[r][list(cover.c_setNeg)[0]]==-1:
-                            unSharedWeight[r][0]=unSharedWeight[r][0]-cover.c_setNeg
+                            unSharedWeight[r][0]=unSharedWeight[r][0]-cover.c_setPos
                             unSharedWeight[r][1]=unSharedWeight[r][1]-cover.c_setNeg
                         else:
                             unSharedWeight[r][0]=unSharedWeight[r][0]-cover.c_setNeg
-                            unSharedWeight[r][1]=unSharedWeight[r][1]-cover.c_setNeg
-        
+                            unSharedWeight[r][1]=unSharedWeight[r][1]-cover.c_setPos
+        #print(unSharedWeight)            
 
     print("total gain:",totalGain)
     print("cost after opt:",np.abs(w).sum()*bp-totalGain)
     print("cost before opt:",np.abs(w).sum()*bp)
     print("reduction:",totalGain/(np.abs(w).sum()*bp))
     # log.write(f"|{l}|{np.abs(w).sum()*bp-totalGain}/{np.abs(w).sum()*bp}| | |\n")
-    if lind<5:
-        convCostCount+=np.abs(w).sum()*bp-totalGain
-    else:
-        fcCostCount+=np.abs(w).sum()*bp-totalGain
+    # if lind<5:
+    #     convCostCount+=np.abs(w).sum()*bp-totalGain
+    # else:
+    #     fcCostCount+=np.abs(w).sum()*bp-totalGain
     ################################################################    
     #save results
     for c in resultCoverings:
-    	if c.gain==0:
-    		resultCoverings.remove(c)
+    	if c.gain<=0:
+            for row in list(c.r_set):
+                for col in list(c.c_setPos|c.c_setNeg):
+                    unSharedWeight[row][0].add(col)
+            resultCoverings.remove(c)
+
     pickle.dump(resultCoverings,open(f"{modelFolder}covering/{l}SharedW_3.pkl",'wb'))
 
     rstUnSharedW=dict()
@@ -446,6 +429,6 @@ for lind,l in enumerate(layers):
 # log.close()
 
 
-print('conv cost:',convCostCount)
-print('fc cost:',fcCostCount)
-print('total cost:',convCostCount+fcCostCount)
+# print('conv cost:',convCostCount)
+# print('fc cost:',fcCostCount)
+# print('total cost:',convCostCount+fcCostCount)
