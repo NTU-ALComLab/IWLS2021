@@ -1,3 +1,7 @@
+mkdir -p temp_weights
+mkdir -p weight_array_dense2
+python3 train_model.py
+
 mkdir -p cktFolder
 python3 revised_gencircuit.py
 
