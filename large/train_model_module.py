@@ -140,9 +140,9 @@ def model(weightConstraintEnable,biasConstraintEnable,quantizeEnable,roundInputs
   
 	if roundInputs:
 		r2 = rounding()(merge_last)
-		dense1 = Dense(16,activation=ReLU(max_value=32,threshold=0),use_bias=True,name='dense1',bias_constraint=result_b,kernel_constraint=result_w[2])(r2)
+		dense1 = Dense(20,activation=ReLU(max_value=32,threshold=0),use_bias=True,name='dense1',bias_constraint=result_b,kernel_constraint=result_w[2])(r2)
 	else:
-		dense1 = Dense(16,activation=ReLU(max_value=32,threshold=0),use_bias=True,name='dense1',bias_constraint=result_b,kernel_constraint=result_w[2])(merge_last)
+		dense1 = Dense(20,activation=ReLU(max_value=32,threshold=0),use_bias=True,name='dense1',bias_constraint=result_b,kernel_constraint=result_w[2])(merge_last)
 
 	if roundInputs:
 		r3 = rounding()(dense1)
