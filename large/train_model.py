@@ -1,7 +1,7 @@
 from train_model_module import load_dataset
 from train_model_module import model
 import numpy as np
-from keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 def view_weights(model):
   for layer in model.layers: 

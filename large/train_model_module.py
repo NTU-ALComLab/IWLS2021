@@ -1,15 +1,26 @@
+# import tensorflow as tf
+# import numpy as np
+# from tensorflow.keras.models import Model
+# from tensorflow.keras.layers import Input,Dense,Flatten,Dropout,MaxPooling2D, Conv2D
+# from tensorflow.keras.layers.merge import concatenate
+# from tensorflow.keras.datasets import cifar10
+# from tensorflow.keras.utils.np_utils import to_categorical
+# from tensorflow.keras.models import load_model
+# from tensorflow.keras.layers import ReLU
+# from tensorflow.keras import constraints
+# from tensorflow.keras.initializers import RandomUniform
+
+from tensorflow.keras.models import Model
+from tensorflow.keras.layers import Input, Dense, Flatten, Dropout, MaxPooling2D, Conv2D, concatenate
+from tensorflow.keras.datasets import cifar10
+from tensorflow.keras.utils import to_categorical
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.models import load_model
+from tensorflow.keras.layers import ReLU
+from tensorflow.keras import constraints
+from tensorflow.keras.initializers import RandomUniform
 import tensorflow as tf
 import numpy as np
-from keras.models import Model
-from keras.layers import Input,Dense,Flatten,Dropout,MaxPooling2D
-from keras.layers.convolutional import Conv2D
-from keras.layers.merge import concatenate
-from keras.datasets import cifar10
-from keras.utils.np_utils import to_categorical
-from keras.models import load_model
-from keras.layers import ReLU
-from keras import constraints
-from keras.initializers import RandomUniform
 
 
 def load_dataset():
