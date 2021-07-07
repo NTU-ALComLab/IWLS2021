@@ -56,7 +56,12 @@ for i,layer in enumerate(layerNames):
                 xInd=getXInd(term)
                 shift=getShift(term)
                 #print(neg,xInd,shift,sep=' ')
-                matrices[layer][oInd,xInd*numBits+(numBits-shift)-1]= -1 if neg else 1
+                if matrices[layer][oInd,xInd*numBits+(numBits-shift)-1]!=0:
+                    matrices[layer][oInd,xInd*numBits+(numBits-shift)-1]=0
+                    matrices[layer][oInd,xInd*numBits+(numBits-shift-1)-1]= -1 if neg else 1
+                    assert(shift+1<=4)
+                else:
+                    matrices[layer][oInd,xInd*numBits+(numBits-shift)-1]= -1 if neg else 1
             
         lInd+=1
 
