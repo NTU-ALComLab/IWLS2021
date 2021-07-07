@@ -9,7 +9,7 @@ The CIFAR-10 dataset consists of 60,000 32x32 colour (RGB channels) images with 
 ## How to Load
 For the our ease-of-use, we re-organized the orginal Python version of the dataset with the following modifications:  
 * Each image, which was originally a 8-bit integer vector of length 3x32x32=3,072, was reshaped into a 3D array of shape (3, 32, 32).
-* All the training batches (`data_batch` 1~5) were merged into a single file `train_data.pk`, and the test batch (`test_batch`) is renamed to `test_data.pk`.
+* All the training batches (`data_batch` 1~5) were merged into a single file `train_data.pk`[<sup>[1]</sup>](#fn1), and the test batch (`test_batch`) is renamed to `test_data.pk`.
 
 Each of the 2 data files is a pickled object containing a dictionary with keys 'labels' and 'data'. Below is a Python3 example of loading the training dataset.
 ```
@@ -20,3 +20,5 @@ data = dataset['data']          # a np.uint8 array of shape (50,000, 3, 32, 32)
 ```
 
 For the binary version of the dataset, we did not make any changes. Please follow the guides provided in the [CIFAR-10 website](https://www.cs.toronto.edu/~kriz/cifar.html) to load the dataset.
+
+<a class="anchor" id="fn1">[1]</a>: As the file `train_data.pk` exceeds 100MB, you would need Git Large File Storage ([LFS](https://git-lfs.github.com/)) to successfully download the file. Alternately, you can also download the training data via this [link](https://drive.google.com/file/d/1TXUgXplpMdfANvvuqaHZYfQqUeeC-bCR/view?usp=sharing).
