@@ -69,11 +69,11 @@ class Covering():
         return result
     
     def __str__(self):
-        result="r_set:{}\nc_setPos:{}\nc_setPosNeg:{}\ngain:{}".format(self.r_set,self.c_setPos,self.c_setNeg,self.gain)
+        result="r_set:{}\nc_setPos:{}\nc_setNeg:{}\ngain:{}".format(self.r_set,self.c_setPos,self.c_setNeg,self.gain)
         return result
     
     def __repr__(self):
-        result="r_set:{}\nc_setPos:{}\nc_setPosNeg:{}\ngain:{}".format(self.r_set,self.c_setPos,self.c_setNeg,self.gain)
+        result="r_set:{}\nc_setPos:{}\nc_setNeg:{}\ngain:{}".format(self.r_set,self.c_setPos,self.c_setNeg,self.gain)
         return result
     @classmethod
     def merge(cls,cover1,cover2):
@@ -188,7 +188,13 @@ def findInitPairing(w,bp):
         if type(colsDiffNeg)==int:
             colsDiffNeg=tuple((colsDiffNeg,))
         unUsedCols=fullSet-set(colsSamePos)-set(colsSameNeg)-set(colsDiffPos)-set(colsDiffNeg)
-        sharings=[Covering(set([i,j]),colsSamePos,colsSameNeg,bp),Covering(set([i,j]),colsDiffPos,colsDiffNeg,bp)]
+        c1=Covering(set([i,j]),colsSamePos,colsSameNeg,bp)
+        c2=Covering(set([i,j]),colsDiffPos,colsDiffNeg,bp)
+        sharings=[]
+        if c1.gain>0:
+            sharings.append(c1)
+        if c2.gain>0:
+            sharings.append(c2)
         #usedCols=sharings[0].c_setPos|sharings[0].c_setNeg|sharings[1].c_setPos|sharings[1].c_setNeg
         initPairings.append(Pairing(set([i,j]),sharings,unUsedCols,[]))
     print("len(initPairings):",len(initPairings))
@@ -258,7 +264,7 @@ def countUsedCols(pairings):
 
 #main
 modelFolder="./"
-numBits=4
+numBits=5
 convs=["conv11","conv21","conv22"]
 fcs=["dense1","dense"]
 # log=open(modelFolder+"covering_log_Booth.txt",'w')
@@ -269,7 +275,7 @@ for i in range(len(convs)):
 for i in range(len(fcs)):
     layers.append(fcs[i])
 
-#layers=['conv22']
+#layers=['conv21']
 
 convCostCount=0
 fcCostCount=0
@@ -278,6 +284,7 @@ for lind,l in enumerate(layers):
     print(l)
     with open(f"parseRet/{l}.npy",'rb') as f:
         w=np.load(f)
+        w=w.astype(int)
     #t=torch.from_numpy(m)
     #w=t.numpy()
     bp=numBits*2
@@ -335,8 +342,11 @@ for lind,l in enumerate(layers):
         else:
             negCols=set(negCols)
         unSharedWeight[r]=[posCols,negCols]
+        assert(len(posCols)+len(negCols)==abs(w[r]).sum())
     for cover in resultCoverings:
         for r in cover.r_set:
+            if r==287:
+                print(cover)
             #nonZeroCols=set(np.argwhere(w[r]!=0).squeeze().tolist())
             if len(cover.c_setPos)>=1:
                 if w[r][list(cover.c_setPos)[0]]==1:
@@ -382,6 +392,8 @@ for lind,l in enumerate(layers):
         for pair in postPairing:
             for cover in pair.sharings:
                 for r in cover.r_set:
+                    if r==287:
+                        print(cover)
                     #nonZeroCols=set(np.argwhere(w[r]!=0).squeeze().tolist())
                     if len(cover.c_setPos)>=1:
                         if w[r][list(cover.c_setPos)[0]]==1:
@@ -410,12 +422,22 @@ for lind,l in enumerate(layers):
     #     fcCostCount+=np.abs(w).sum()*bp-totalGain
     ################################################################    
     #save results
-    for c in resultCoverings:
-    	if c.gain<=0:
+
+    # for c in resultCoverings:
+    #     if (len(c.c_setNeg)+len(c.c_setPos))<=0:
+    #         print(c)
+    #         print(c.gain,c.gain<=0.1)
+    for ind,c in enumerate(resultCoverings):
+        if c.gain<=0.1:
+            print(c)
             for row in list(c.r_set):
                 for col in list(c.c_setPos|c.c_setNeg):
                     unSharedWeight[row][0].add(col)
             resultCoverings.remove(c)
+    # for ind,c in enumerate(resultCoverings):
+    #     if len(c.c_setPos)==0 and len(c.c_setNeg)==0:
+    #         print("ind:",ind,c)
+    #         resultCoverings.remove(c)
 
     pickle.dump(resultCoverings,open(f"{modelFolder}covering/{l}SharedW_3.pkl",'wb'))
 
