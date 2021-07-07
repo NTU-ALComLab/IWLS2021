@@ -25,7 +25,7 @@ def getShift(s):
 def writeSharing(mat,sharedW,unsharedW,file):
     sharingMap=dict()
     for i in range(len(sharedW)):
-        file.write(f"wire [30:0] sharing{i};\n")
+        file.write(f"wire [15:0] sharing{i};\n")
     for i,cover in enumerate(sharedW):
         file.write(f"assign sharing{i} = ")
         terms=[]
