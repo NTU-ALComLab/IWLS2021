@@ -345,8 +345,8 @@ for lind,l in enumerate(layers):
         assert(len(posCols)+len(negCols)==abs(w[r]).sum())
     for cover in resultCoverings:
         for r in cover.r_set:
-            if r==287:
-                print(cover)
+            # if r==287:
+            #     print(cover)
             #nonZeroCols=set(np.argwhere(w[r]!=0).squeeze().tolist())
             if len(cover.c_setPos)>=1:
                 if w[r][list(cover.c_setPos)[0]]==1:
