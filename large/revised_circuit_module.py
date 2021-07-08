@@ -91,7 +91,7 @@ def genconv(input_bits,output_bits,weights,bias,outputFile, moduleName, inputSha
           fout.write(f"+")
         else:
           fout.write(f"-")
-        fout.write(f"$signed({output_bits+6}'d{abs(round(bias[co]*(2**(4+shift_amount))))});")
+        fout.write(f"$signed({output_bits+6}'d{abs(int(round(bias[co]*(2**(4+shift_amount)))))});")
         fout.write(f"\n")
         fout.write(f"assign y{outputIndex}=")
         #shift amount 是輸入是到小數地幾位(2進制)
@@ -146,7 +146,7 @@ def gendense(input_bits,outputFile, moduleName, inputSize , outputSize , weight,
     else:
         fout.write(f"-")
 
-    fout.write(f"$signed({input_bits+8}'d{abs(round(bias[o]*(2**(4+1)))) });\n")    
+    fout.write(f"$signed({input_bits+8}'d{abs(int(round(bias[o]*(2**(4+1))))) });\n")    
     
     if o > 0:
       if o==1:
@@ -237,7 +237,7 @@ def gen_inner_dense(input_bits,outputFile, moduleName, inputSize , outputSize , 
     else:
         fout.write(f"-")
 
-    fout.write(f"$signed({input_bits+8}'d{abs(round(bias[o]*(2**(4+shift_amount)))) });\n")    
+    fout.write(f"$signed({input_bits+8}'d{abs(int(round(bias[o]*(2**(4+shift_amount))))) });\n")    
     
     start=4+shift_amount
     high = start-output_resolution+output_bits-1
