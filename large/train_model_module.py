@@ -28,8 +28,8 @@ def load_dataset():
 	(trainX, trainY), _ = cifar10.load_data()
     
 	trainX >>= 1
-	trainX = np.concatenate((trainX[:, ::2, ::2, :], trainX[:, 1::2, 1::2, :]), axis=0)
-	trainY = np.concatenate(2 * (trainY, ), axis=0)
+	trainX = np.concatenate((trainX[:, ::2, ::2, :], trainX[:, 1::2, 1::2, :], trainX[:, ::2, 1::2, :], trainX[:, 1::2, ::2, :]), axis=0)
+	trainY = np.concatenate(4 * (trainY, ), axis=0)
 	trainY = to_categorical(trainY)
     
    
