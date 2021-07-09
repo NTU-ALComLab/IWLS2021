@@ -13,7 +13,7 @@ preConfig = {
 dtParams = {
     'criterion': 'gini',
     'max_depth': 15,
-    'ccp_alpha': 0.0005,
+    'ccp_alpha': 0.00045,
 }
 
 x = utils.loadConfig('data/raw/train_data.pk')
