@@ -95,7 +95,10 @@ docker run -it iwls2021
     python3 medium.py
     ```
 
-5. To generate the large circuit (with no more than 1,000,000 AIG-nodes), please follow the instructions in `large/`. Unfortunately, we have not had enough time to integrate the overall procedure into a single script. The codes are submitted for your review.
+5. To generate the large circuit (with no more than 1,000,000 AIG-nodes), run the script `large.sh`. The output circuit can be found at `large/large..aig`.
+    ```
+    bash large.sh
+    ```
 
 6. If you want to train a decision-tree-based model with customized parameters instead of our fine-tuned ones, run the script `main.py` and use the flag `--help` to see the help messages.
     ```
