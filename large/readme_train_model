@@ -1,2 +1,0 @@
-Use custom constraint to constrain weights to only power of 2 value, 
-decreasing hardware resource needed with just a slight degrade in performance.
