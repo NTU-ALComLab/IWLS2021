@@ -43,9 +43,9 @@ After the submission deadline (June 25, 2021) of the contest, we took some time 
 
 |                   | `small_new.aig` | `medium_new.aig`| `large_new.aig` |
 |-------------------|-----------------|-----------------|-----------------|
-| size (#AIG-nodes) |           9,192 |          99,873 |         970,324 |
-| training acc. (%) |           43.92 |           54.99 |           59.08 |
-|  testing acc. (%) |           39.45 |           45.44 |           56.09 |
+| size (#AIG-nodes) |           9,192 |          99,873 |         967,173 |
+| training acc. (%) |           43.92 |           54.99 |           59.18 |
+|  testing acc. (%) |           39.45 |           45.44 |           56.34 |
 
 
 <a class="anchor" id="fn1">[1]</a>: The training accuracy is computed by averaging the accuracy achieved on each of the training data batches (`data_batch` 1~5).
