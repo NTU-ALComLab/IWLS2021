@@ -11,3 +11,4 @@ RUN git clone https://github.com/YosysHQ/yosys.git IWLS2021/tools/yosys || :
 RUN cd IWLS2021/tools/yosys && make -j8
 RUN pip3 install --upgrade pip
 RUN pip3 install -r IWLS2021/requirements.txt
+RUN cd IWLS2021/ && python3 data/reformat.py
