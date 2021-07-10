@@ -39,7 +39,7 @@ The 3 AIGs `small.aig`, `medium.aig` and `large.aig` can be found in `submit_AIG
 We only used the CIFAR-10 testing data **ONCE** for each submitted circuit in the 3 size categories for the purpose of final evaluation right before the submission. That is, we never used the testing dataset during the the course of our research.
 
 ### Newer Version
-After the submission deadline (June 25, 2021) of the contest, we took some time to fine-tune the hyper-parameters and fix a bug that caused a ≈1% accuracy degradation during large circuit generation. The 3 newer versions of AIGs `small_new.aig`, `medium_new.aig` and `large_new.aig` can also be found in `submit_AIGs/`. Their sizes and accuracies are listed below. Each of the 3 newer circuit not only achieves a higher testing accuracy, and at the same time has a smaller generlization gap (the margin between training and testing accuracy) than the originally submitted one.
+After the submission deadline (June 25, 2021) of the contest, we took some time to fine-tune the hyper-parameters and fix a bug that caused a ≈1% accuracy degradation during large circuit generation. The 3 newer versions of AIGs `small_new.aig`, `medium_new.aig` and `large_new.aig` can also be found in `submit_AIGs/`. Their sizes and accuracies are listed below. Each of the 3 newer circuit not only achieves a higher testing accuracy, but at the same time has a smaller generlization gap (the margin between training and testing accuracy) than the originally submitted one.
 
 |                   | `small_new.aig` | `medium_new.aig`| `large_new.aig` |
 |-------------------|-----------------|-----------------|-----------------|
