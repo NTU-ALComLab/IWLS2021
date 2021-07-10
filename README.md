@@ -64,7 +64,7 @@ docker run -it iwls2021
 ## How To Run [<sup>[2]</sup>](#fn2)
 0. It is recommended to clone this repository with the `--recurse-submodules` flag. 
     ```
-    git clone --recurse-submodules git@github.com:Po-Chun-Chien/IWLS2021.git
+    git clone --recurse-submodules git@github.com:NTU-ALComLab/IWLS2021.git
     ```
 
 1. Clone and build [ABC](https://github.com/berkeley-abc/abc) in `tools/abc/`.
@@ -85,7 +85,7 @@ docker run -it iwls2021
     cd ../..
     ```
 
-3. Before running the circuit learning programs, re-format the original CIFAR-10 dataset with the provided script `data/reformat.py`. (You may refer to [`data/format.md`](https://github.com/Po-Chun-Chien/IWLS2021/blob/main/data/format.md) to see how the dataset is loaded and re-organized).
+3. Before running the circuit learning programs, re-format the original CIFAR-10 dataset with the provided script `data/reformat.py`. (You may refer to [`data/format.md`](https://github.com/NTU-ALComLab/IWLS2021/blob/main/data/format.md) to see how the dataset is loaded and re-organized).
     ```
     python3 data/reformat.py
     ```
