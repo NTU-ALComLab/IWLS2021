@@ -16,10 +16,10 @@ From the 10 classes of CIFAR-10 dataset, we select 2 classes and train a binary 
 We train 10 'small' classifers described in the previous section with different subsets of the dataset (to increase the divrsity of each classifier). The final prediction is decided by majority voting of the 10 classifers.
 
 ### Learning Large Circuits
-We train a shallow convolutional neural network (CNN) model with grouped convolutions and quantized weights. The CNN contains 2 convolutional layer and 2 dense (fully connected) layers. For the convolutional kernals, their weights are restricted to the powers of 2 (i.e. 2<sup>-1</sup>, 2<sup>0</sup>, 2<sup>1</sup> ...) and 0s, and for the dense layers, the wieghts are represented with 4-bit fixed point numbers. The quantized CNN model is then synthesized with sub-adder sharing to reduce the circuit size (≈30% lesser gates with sharing enabled).
+We train a shallow convolutional neural network (CNN) model with grouped convolutions and quantized weights. The CNN contains 2 convolutional layer and 2 dense (fully connected) layers. For the convolutional kernals, their weights are restricted to the powers of 2 (i.e. 2<sup>-1</sup>, 2<sup>0</sup>, 2<sup>1</sup> ...) and 0s, and for the dense layers, the weights are represented with 4-bit fixed point numbers. The quantized CNN model is then synthesized with sub-adder sharing to reduce the circuit size (≈30% lesser gates with sharing enabled).
 
 ### Others
-We apply the following preprocessing methods on the CIFAR-10 dataset (You may refer to [`data/format.md`](https://github.com/Po-Chun-Chien/IWLS2021/blob/submit/data/format.md) to see how the dataset is parsed and re-organized).
+We apply the following preprocessing methods on the CIFAR-10 dataset.
 - Image downsampling.
 - Image augmentation.
 - Truncating several least significant bits of each image pixel.
@@ -85,22 +85,27 @@ docker run -it iwls2021
     cd ../..
     ```
 
-3. To generate the small circuit (with no more than 10,000 AIG-nodes), run the script `small.py`. The output circuit can be found at `small/small.aig`.
+3. Before running the circuit learning programs, re-format the original CIFAR-10 dataset with the provided script `data/reformat.py`. (You may refer to [`data/format.md`](https://github.com/Po-Chun-Chien/IWLS2021/blob/main/data/format.md) to see how the dataset is loaded and re-organized).
+    ```
+    python3 data/reformat.py
+    ```
+
+4. To generate the small circuit (with no more than 10,000 AIG-nodes), run the script `small.py`. The output circuit can be found at `small/small.aig`.
     ```
     python3 small.py
     ```
 
-4. To generate the medium circuit (with no more than 100,000 AIG-nodes), run the script `medium.py`. The output circuit can be found at `medium/medium.aig`.
+5. To generate the medium circuit (with no more than 100,000 AIG-nodes), run the script `medium.py`. The output circuit can be found at `medium/medium.aig`.
     ```
     python3 medium.py
     ```
 
-5. To generate the large circuit (with no more than 1,000,000 AIG-nodes), run the script `large.sh`. The output circuit can be found at `large/large..aig`.
+6. To generate the large circuit (with no more than 1,000,000 AIG-nodes), run the script `large.sh`. The output circuit can be found at `large/large..aig`.
     ```
     bash large.sh
     ```
 
-6. If you want to train a decision-tree-based model with customized parameters instead of our fine-tuned ones, run the script `main.py` and use the flag `--help` to see the help messages.
+7. If you want to train a decision-tree-based model with customized parameters instead of our fine-tuned ones, run the script `main.py` and use the flag `--help` to see the help messages.
     ```
     python3 main.py     # execute with default arguments
     ```
