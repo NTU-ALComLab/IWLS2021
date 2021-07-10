@@ -131,3 +131,18 @@ dmypy.json
 # self-defined hidden filename
 **/_x_*/
 **/_x_*
+
+# program outputs
+small/
+medium/
+large/temp_weights/
+large/weight_array_dense2/
+large/cktFolder/
+large/covering/
+large/parseRet/
+large/modifiedCkt/
+large/large.aig
+**_acc.json
+**_info.json
+**_orig.aig
+
