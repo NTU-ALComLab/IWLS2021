@@ -146,3 +146,6 @@ large/large.aig
 **_info.json
 **_orig.aig
 
+# CIFAR-10 dataset
+data/raw/train_data.pk
+data/raw/test_data.pk
